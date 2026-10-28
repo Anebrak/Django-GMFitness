@@ -1,0 +1,25 @@
+{% extends "gmf/base.html" %}
+{# Base de las páginas internas (cliente, rutinas, dietas): encabezado + barra lateral #}
+
+{% block cuerpo %}
+    <header>
+        <nav>
+            <div id="usuario-bola">DM</div>
+            <h1>GMFitness</h1>
+        </nav>
+    </header>
+
+    <aside id="barra-lateral">
+        <button type="button" id="btn-toggle" class="item-lateral" aria-label="Expandir o contraer barra lateral">
+            <i class="fa-solid fa-bars"></i>
+            <span>Contraer</span>
+        </button>
+        {% block barra_lateral %}{% endblock %}
+    </aside>
+
+    <main id="contenido">
+        {% block contenido %}{% endblock %}
+    </main>
+
+    {% block modales %}{% endblock %}
+{% endblock %}

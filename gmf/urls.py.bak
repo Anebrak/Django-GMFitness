@@ -1,0 +1,10 @@
+from django.urls import path
+
+from . import views
+
+# Espacio de nombres: en los templates se usa {% url 'gmf:inicio' %}
+app_name = "gmf"
+
+urlpatterns = [
+    path("", views.inicio, name="inicio"),
+]

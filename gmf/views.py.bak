@@ -1,0 +1,6 @@
+from django.shortcuts import render
+
+
+def inicio(request):
+    # "gmf/inicio.html" -> gmf/templates/gmf/inicio.html
+    return render(request, "gmf/inicio.html")

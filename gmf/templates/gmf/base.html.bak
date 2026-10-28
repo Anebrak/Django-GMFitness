@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titulo %}GMFitness{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'gmf/css/estilos.css' %}">
+</head>
+<body>
+
+  {# Plantilla base: el menu y el pie se escriben una sola vez aqui #}
+  <header class="encabezado">
+    <a class="logo" href="{% url 'gmf:inicio' %}">GM<span>Fitness</span></a>
+    <nav>
+      <a href="{% url 'gmf:inicio' %}">Inicio</a>
+      <a href="#">Planes</a>
+      <a href="#">Horarios</a>
+      <a href="#">Contacto</a>
+    </nav>
+  </header>
+
+  <main>
+    {# Cada pagina rellena este bloque con su propio contenido #}
+    {% block contenido %}{% endblock %}
+  </main>
+
+  <footer class="pie">
+    © 2026 GMFitness
+  </footer>
+
+</body>
+</html>

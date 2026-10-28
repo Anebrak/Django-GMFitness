@@ -1,0 +1,151 @@
+/* gmf/static/gmf/css/estilos.css
+   Se carga desde base.html con la etiqueta static de Django */
+
+:root {
+  --negro: #111418;
+  --gris: #1c2128;
+  --texto: #e8eaed;
+  --suave: #9aa3ad;
+  --acento: #ff5a1f;
+  --acento-hover: #e04812;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--negro);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Encabezado */
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--gris);
+  border-bottom: 3px solid var(--acento);
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--texto);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+.logo span {
+  color: var(--acento);
+}
+
+.encabezado nav a {
+  color: var(--suave);
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-weight: 500;
+}
+
+.encabezado nav a:hover {
+  color: var(--texto);
+}
+
+/* Portada */
+.hero {
+  text-align: center;
+  padding: 5rem 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.hero h1 {
+  font-size: 2.75rem;
+  line-height: 1.15;
+}
+
+.hero h1 span {
+  color: var(--acento);
+}
+
+.hero p {
+  max-width: 560px;
+  color: var(--suave);
+  line-height: 1.6;
+}
+
+.boton {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: var(--acento);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.boton:hover {
+  background: var(--acento-hover);
+}
+
+/* Beneficios */
+.beneficios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 4rem;
+}
+
+.tarjeta {
+  background: var(--gris);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-top: 3px solid var(--acento);
+}
+
+.tarjeta h3 {
+  margin-bottom: 0.5rem;
+}
+
+.tarjeta p {
+  color: var(--suave);
+  line-height: 1.5;
+}
+
+/* Pie */
+.pie {
+  text-align: center;
+  padding: 1rem;
+  background: var(--gris);
+  color: var(--suave);
+  font-size: 0.9rem;
+}
+
+/* Pantallas pequenas */
+@media (max-width: 600px) {
+  .encabezado {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .encabezado nav a {
+    margin: 0 0.6rem;
+  }
+  .hero h1 {
+    font-size: 2rem;
+  }
+}
