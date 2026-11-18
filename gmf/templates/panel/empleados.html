@@ -1,0 +1,45 @@
+{% extends "panel/base_seccion.html" %}
+{% load gmf_extras %}
+
+{% block filtros %}
+    <select name="rol" class="filtro" aria-label="Rol">
+        {% for valor, texto in opciones_rol %}
+            <option value="{{ valor }}"{% if valor == rol %} selected{% endif %}>{{ texto }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block columnas %}
+    <th>Empleado</th>
+    <th>Rol</th>
+    <th>Especialidad</th>
+    <th>Sede</th>
+    <th>Teléfono</th>
+    <th>Estado</th>
+{% endblock %}
+
+{% block filas %}
+    {% for u in pagina %}
+        <tr{% if not u.is_active %} class="fila-inactiva"{% endif %}>
+            <td>
+                <div class="celda-persona">
+                    <span class="usuario-bola" aria-hidden="true">{{ u|iniciales }}</span>
+                    <div>
+                        <strong>{{ u.get_full_name }}</strong>{% if u.pk == user.pk %} <span class="etiqueta-tu">Tú</span>{% endif %}
+                        <small>{{ u.email }}</small>
+                    </div>
+                </div>
+            </td>
+            <td><span class="etiqueta-rol rol-{{ u.rol|lower }}">{{ u.get_rol_display }}</span></td>
+            <td>{{ u.perfil.especialidad|default:"—" }}</td>
+            <td>{{ u.sede.nombre|default:"—" }}</td>
+            <td>{{ u.telefono|default:"—" }}</td>
+            <td><span class="etiqueta-estado {% if u.is_active %}activo{% else %}inactivo{% endif %}">{% if u.is_active %}Activo{% else %}Inactivo{% endif %}</span></td>
+            {% include "panel/_acciones.html" with id=u.pk activo=u.is_active nombre=u.get_full_name usuario=True %}
+        </tr>
+    {% empty %}
+        <tr><td colspan="7" class="sin-resultados"><i class="fa-solid fa-user-tie"></i>No hay empleados con esos filtros.</td></tr>
+    {% endfor %}
+{% endblock %}
+
+{% block datos_extra %}{{ roles_profesional|json_script:"roles-profesional" }}{% endblock %}

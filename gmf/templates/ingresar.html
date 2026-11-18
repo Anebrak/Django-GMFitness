@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Ingresar | GMFitness{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{% static 'css/cuenta.css' %}">{% endblock %}
+
+{% block contenido %}
+    <section class="tarjeta-cuenta">
+        <h1>Ingresar</h1>
+        <p class="texto-ayuda">Entra con el correo con el que te registraste.</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="campos">
+                {% include "_campo.html" with nombre="email" etiqueta="Correo" tipo="email" valor=form.email autocompletar="email" marcador="tu@correo.com" enfoque=True %}
+                {% include "_campo.html" with nombre="password" etiqueta="Contraseña" tipo="password" autocompletar="current-password" marcador="Tu contraseña" %}
+            </div>
+            <div class="acciones-formulario">
+                <button type="submit" class="boton-primario boton-grande boton-ancho">Ingresar</button>
+            </div>
+        </form>
+
+        <p class="cambiar-cuenta">¿Aún no tienes cuenta? <a href="{% url 'registro' %}">Regístrate gratis</a></p>
+    </section>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/cuenta.js' %}"></script>{% endblock %}

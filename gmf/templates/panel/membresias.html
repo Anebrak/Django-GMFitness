@@ -1,0 +1,27 @@
+{% extends "panel/base_seccion.html" %}
+{% load gmf_extras %}
+
+{% block columnas %}
+    <th>Plan</th>
+    <th>Duración</th>
+    <th class="numero">Precio</th>
+    <th>Descripción</th>
+    <th class="numero">Suscripciones vigentes</th>
+    <th>Estado</th>
+{% endblock %}
+
+{% block filas %}
+    {% for m in pagina %}
+        <tr{% if not m.activa %} class="fila-inactiva"{% endif %}>
+            <td><span class="etiqueta-plan premium"><i class="fa-solid fa-crown"></i> {{ m.get_tipo_display }}</span></td>
+            <td>{{ m.get_duracion_display }}</td>
+            <td class="numero"><strong>{{ m.precio|pesos }}</strong></td>
+            <td class="celda-texto">{{ m.descripcion|default:"—"|truncatechars:60 }}</td>
+            <td class="numero">{{ m.num_activas }}</td>
+            <td><span class="etiqueta-estado {% if m.activa %}activo{% else %}inactivo{% endif %}">{% if m.activa %}Activa{% else %}Inactiva{% endif %}</span></td>
+            {% include "panel/_acciones.html" with id=m.pk activo=m.activa nombre=m %}
+        </tr>
+    {% empty %}
+        <tr><td colspan="7" class="sin-resultados"><i class="fa-solid fa-id-card"></i>No hay membresías con esos filtros.</td></tr>
+    {% endfor %}
+{% endblock %}

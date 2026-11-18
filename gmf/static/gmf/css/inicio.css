@@ -1,0 +1,464 @@
+/* =========================================================
+   GMFitness - página de inicio
+   Los colores y botones vienen de base.css
+   ========================================================= */
+
+main {
+  padding-top: 70px; /* alto del encabezado fijo */
+}
+
+.seccion {
+  padding: 5rem 0;
+}
+
+.seccion:nth-of-type(even) {
+  background-color: var(--azul-900);
+}
+
+.titulo-seccion {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.titulo-seccion h2 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+.titulo-seccion p {
+  color: var(--gris-inactivo);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.etiqueta {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background-color: rgba(254, 108, 5, 0.12);
+  border: 1px solid var(--borde-naranja);
+  color: var(--naranja-300);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.icono-caja {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background-color: var(--azul-fondo-iconos);
+  color: var(--naranja);
+  font-size: 1.7rem;
+  flex-shrink: 0;
+}
+
+.vacio {
+  text-align: center;
+  color: var(--gris-inactivo);
+  padding: 2.5rem 1rem;
+  border: 1px dashed var(--gris-bordes);
+  border-radius: 14px;
+}
+
+.vacio i {
+  font-size: 2rem;
+  color: var(--gris-bordes);
+  margin-bottom: 0.75rem;
+}
+
+/*
+--------------------------------
+            Portada
+--------------------------------
+*/
+#portada {
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 0 5rem;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(254, 108, 5, 0.18), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(45, 51, 93, 0.6), transparent 50%),
+    var(--azul-oscuro);
+}
+
+#portada .contenedor {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 3rem;
+}
+
+#portada h1 {
+  font-size: clamp(2.3rem, 5.5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 1rem 0 1.25rem;
+}
+
+#portada p {
+  color: var(--azul-100);
+  font-size: 1.15rem;
+  max-width: 34rem;
+  margin: 0 0 2rem;
+}
+
+#portada-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Tarjeta decorativa de la portada: muestra las tres áreas de la app */
+#portada-tarjeta {
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.portada-fila {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--azul-oscuro);
+}
+
+.portada-fila .icono-caja {
+  width: 52px;
+  height: 52px;
+  font-size: 1.35rem;
+}
+
+.portada-fila h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+#portada .portada-fila p {
+  margin: 0;
+  max-width: none;
+  font-size: 0.9rem;
+  color: var(--gris-inactivo);
+}
+
+/*
+--------------------------------
+            Lo que ofrecemos
+--------------------------------
+*/
+#cajas-oferta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.caja-oferta {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.75rem;
+  min-height: 210px;
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 22px;
+  padding: 2.5rem;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.caja-oferta .icono-caja {
+  width: 88px;
+  height: 88px;
+  border-radius: 20px;
+  font-size: 2.3rem;
+}
+
+.caja-oferta:hover {
+  transform: translateY(-4px);
+  border-color: var(--borde-naranja);
+}
+
+.caja-oferta h3 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.caja-oferta p {
+  margin: 0;
+  color: var(--azul-100);
+  font-size: 1.1rem;
+}
+
+/*
+--------------------------------
+            Planes
+--------------------------------
+*/
+#cajas-planes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 440px));
+  justify-content: center;
+  gap: 2rem;
+}
+
+.plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 24px;
+  padding: 2.75rem 2.5rem;
+}
+
+.plan-destacado {
+  border: 2px solid var(--naranja);
+  box-shadow: 0 20px 45px rgba(254, 108, 5, 0.12);
+}
+
+.plan-destacado .etiqueta {
+  position: absolute;
+  top: -0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--naranja);
+  color: var(--negro);
+  border: 0;
+}
+
+.plan h3 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.plan-duracion {
+  color: var(--gris-inactivo);
+  margin: 0.25rem 0 0;
+  font-size: 1.05rem;
+}
+
+.plan-precio {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.plan-pago {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--naranja-300);
+  font-weight: 600;
+  margin: 0 0 1.75rem;
+}
+
+.plan-precio small {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--gris-inactivo);
+}
+
+.plan ul {
+  list-style: none;
+  padding: 1.75rem 0 0;
+  margin: 0 0 2.25rem;
+  border-top: 1px solid var(--azul-fondo-iconos);
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  flex: 1;
+}
+
+.plan li {
+  display: flex;
+  gap: 0.7rem;
+  color: var(--azul-100);
+  font-size: 1.08rem;
+}
+
+.plan li i {
+  color: var(--naranja);
+  margin-top: 0.3rem;
+}
+
+/*
+--------------------------------
+            Profesionales
+--------------------------------
+*/
+#cajas-profesionales {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+.profesional {
+  text-align: center;
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 18px;
+  padding: 2rem 1.5rem;
+}
+
+.profesional .usuario-bola {
+  width: 72px;
+  height: 72px;
+  font-size: 1.5rem;
+  margin: 0 auto 1rem;
+}
+
+.profesional h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+}
+
+.profesional p {
+  margin: 0.75rem 0 0;
+  color: var(--gris-inactivo);
+}
+
+/*
+--------------------------------
+            Contacto y sedes (pie)
+--------------------------------
+*/
+footer {
+  background-color: var(--azul-secundario);
+  border-top: 1px solid var(--azul-fondo-iconos);
+  padding: 4rem 0 2rem;
+}
+
+#pie-superior {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+}
+
+#pie-marca p {
+  color: var(--gris-inactivo);
+  margin: 0.75rem 0 0;
+  max-width: 22rem;
+}
+
+#pie-sedes h2 {
+  font-size: 1.3rem;
+  margin: 0 0 1.25rem;
+}
+
+#cajas-sedes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.sede {
+  background-color: var(--azul-oscuro);
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 14px;
+  padding: 1.25rem;
+}
+
+.sede h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.75rem;
+}
+
+.sede ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--azul-100);
+  font-size: 0.93rem;
+}
+
+.sede li {
+  display: flex;
+  gap: 0.6rem;
+  overflow-wrap: anywhere;
+}
+
+.sede li i {
+  color: var(--naranja);
+  width: 1rem;
+  margin-top: 0.25rem;
+}
+
+.sede a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sede a:hover {
+  color: var(--naranja-300);
+}
+
+#pie-inferior {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--azul-fondo-iconos);
+  color: var(--gris-inactivo);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/*
+--------------------------------
+            Responsive
+--------------------------------
+*/
+@media (max-width: 900px) {
+  #cajas-oferta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  #portada .contenedor,
+  #pie-superior {
+    grid-template-columns: 1fr;
+  }
+
+  #portada {
+    padding-top: 4rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .seccion {
+    padding: 3.5rem 0;
+  }
+
+  .caja-oferta {
+    flex-direction: column;
+    gap: 1.25rem;
+    min-height: 0;
+    padding: 2rem 1.5rem;
+  }
+
+  .plan {
+    padding: 2.25rem 1.5rem;
+  }
+
+  .plan-precio {
+    font-size: 2.6rem;
+  }
+
+  #portada-acciones a {
+    flex: 1;
+  }
+}

@@ -1,0 +1,14 @@
+{# Un campo de formulario con su etiqueta, ayuda y errores. Uso: {% include "gmf/_campo.html" with campo=form.email %} #}
+<div class="grupo-campo{% if campo.errors %} con-error{% endif %}{% if completo %} campo-completo{% endif %}">
+    <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+    {% if campo.field.widget.input_type == "password" %}
+        <div class="campo-clave">
+            {{ campo }}
+            <button type="button" class="btn-ver-clave" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+        </div>
+    {% else %}
+        {{ campo }}
+    {% endif %}
+    {% for error in campo.errors %}<p class="error-campo">{{ error }}</p>{% endfor %}
+    {% if campo.help_text %}<div class="ayuda-campo">{{ campo.help_text|safe }}</div>{% endif %}
+</div>

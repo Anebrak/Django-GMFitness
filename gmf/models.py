@@ -222,7 +222,6 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractUser):
     username = None
     email = models.EmailField("email", unique=True)
-    numero_identidad = models.CharField("número de identidad", max_length=20, unique=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     telefono = models.CharField(max_length=20, blank=True)
     rol = models.CharField(max_length=20, choices=RolUsuario.choices, default=RolUsuario.CLIENTE)
@@ -231,7 +230,7 @@ class Usuario(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["numero_identidad", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     objects = UsuarioManager()
 
@@ -270,7 +269,7 @@ class Cliente(models.Model):
         Usuario, on_delete=models.CASCADE, related_name="cliente",
         limit_choices_to={"rol": RolUsuario.CLIENTE},
     )
-    sexo = models.CharField(max_length=1, choices=Sexo.choices)
+    sexo = models.CharField(max_length=1, choices=Sexo.choices, blank=True, help_text="Se completa después del registro.")
     # Valores actuales: se actualizan solos al registrar un ProgresoFisico
     peso = models.DecimalField("peso (kg)", max_digits=5, decimal_places=2, null=True, blank=True, validators=POSITIVO)
     altura = models.DecimalField("altura (cm)", max_digits=4, decimal_places=1, null=True, blank=True, validators=POSITIVO)
@@ -558,6 +557,7 @@ class Ejercicio(models.Model):
     maquina = models.CharField("máquina / equipo", max_length=100, blank=True)
     imagen_url = models.URLField("URL de la imagen", blank=True)
     descripcion = models.TextField(blank=True)
+    activo = models.BooleanField(default=True, help_text="Inactivo = no se ofrece en rutinas nuevas.")
 
     class Meta:
         ordering = ["nombre"]
@@ -725,6 +725,7 @@ class Alimento(models.Model):
     )
     porcion_nombre = models.CharField("nombre de la porción", max_length=50, blank=True, help_text='Ej: "1 unidad".')
     imagen_url = models.URLField("URL de la imagen", blank=True)
+    activo = models.BooleanField(default=True, help_text="Inactivo = no se ofrece en dietas nuevas.")
     proteinas = models.DecimalField(max_digits=6, decimal_places=2, validators=POSITIVO)
     grasas = models.DecimalField(max_digits=6, decimal_places=2, validators=POSITIVO)
     carbohidratos = models.DecimalField(max_digits=6, decimal_places=2, validators=POSITIVO)

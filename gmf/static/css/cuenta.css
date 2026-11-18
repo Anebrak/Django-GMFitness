@@ -1,0 +1,174 @@
+/* =========================================================
+   GMFitness - páginas de cuenta (ingresar y registro)
+   Los colores y botones vienen de base.css
+   ========================================================= */
+
+main {
+  min-height: 100vh;
+  padding: 100px 1rem 3rem;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 80% 15%, rgba(254, 108, 5, 0.14), transparent 40%),
+    var(--azul-oscuro);
+}
+
+.tarjeta-cuenta {
+  width: min(100%, 460px);
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.tarjeta-ancha {
+  width: min(100%, 640px);
+}
+
+.tarjeta-cuenta h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 0.35rem;
+}
+
+.texto-ayuda {
+  color: var(--gris-inactivo);
+  margin: 0 0 1.75rem;
+}
+
+/*
+--------------------------------
+            Formulario
+--------------------------------
+*/
+.campos {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.campos-dos {
+  grid-template-columns: 1fr 1fr;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+.grupo-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.grupo-campo label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.grupo-campo input,
+.grupo-campo select {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--azul-fondo-iconos);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: var(--azul-oscuro);
+  color: var(--blanco-primario);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.grupo-campo input::placeholder {
+  color: var(--azul-oscuro-300);
+}
+
+.grupo-campo input:focus,
+.grupo-campo select:focus {
+  border-color: var(--naranja);
+}
+
+.grupo-campo.con-error input,
+.grupo-campo.con-error select {
+  border-color: #e5484d;
+}
+
+.error-campo {
+  color: #ff8b8e;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.ayuda-campo {
+  color: var(--gris-inactivo);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.ayuda-campo ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.errores-generales {
+  background-color: rgba(229, 72, 77, 0.12);
+  border: 1px solid #e5484d;
+  color: #ffb3b5;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.errores-generales p {
+  margin: 0;
+}
+
+/* Campo de contraseña con botón para mostrarla */
+.campo-clave {
+  position: relative;
+}
+
+.campo-clave input {
+  padding-right: 2.8rem;
+}
+
+.btn-ver-clave {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: var(--gris-inactivo);
+  cursor: pointer;
+  padding: 0.35rem;
+}
+
+.btn-ver-clave:hover {
+  color: var(--blanco-primario);
+}
+
+.acciones-formulario {
+  margin-top: 1.75rem;
+}
+
+.cambiar-cuenta {
+  text-align: center;
+  color: var(--gris-inactivo);
+  margin: 1.5rem 0 0;
+}
+
+/*
+--------------------------------
+            Responsive
+--------------------------------
+*/
+@media (max-width: 560px) {
+  .tarjeta-cuenta {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .campos-dos {
+    grid-template-columns: 1fr;
+  }
+}

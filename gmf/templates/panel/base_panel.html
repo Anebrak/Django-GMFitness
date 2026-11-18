@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{# Base de todas las páginas del panel: barra lateral + contenido #}
+
+{% block titulo %}{% block titulo_panel %}Panel{% endblock %} | GMFitness{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{% static 'css/panel.css' %}">{% endblock %}
+
+{% block contenido %}
+    <aside id="barra-lateral" class="expandida" aria-label="Secciones del panel">
+        <button type="button" id="btn-toggle" class="item-lateral" aria-expanded="true" aria-controls="barra-lateral">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menú</span>
+        </button>
+
+        <a class="item-lateral{% if seccion == 'resumen' %} activo{% endif %}" href="{% url 'panel' %}" title="Resumen"{% if seccion == 'resumen' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-chart-pie"></i><span>Resumen</span>
+        </a>
+
+        <p class="titulo-grupo"><span>Personas</span></p>
+        <a class="item-lateral{% if seccion == 'empleados' %} activo{% endif %}" href="{% url 'panel_empleados' %}" title="Empleados"{% if seccion == 'empleados' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-user-tie"></i><span>Empleados</span>
+        </a>
+        <a class="item-lateral{% if seccion == 'clientes' %} activo{% endif %}" href="{% url 'panel_clientes' %}" title="Clientes"{% if seccion == 'clientes' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-users"></i><span>Clientes</span>
+        </a>
+
+        <p class="titulo-grupo"><span>Gimnasio</span></p>
+        <a class="item-lateral{% if seccion == 'sedes' %} activo{% endif %}" href="{% url 'panel_sedes' %}" title="Sedes"{% if seccion == 'sedes' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-building"></i><span>Sedes</span>
+        </a>
+        <a class="item-lateral{% if seccion == 'membresias' %} activo{% endif %}" href="{% url 'panel_membresias' %}" title="Membresías"{% if seccion == 'membresias' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-id-card"></i><span>Membresías</span>
+        </a>
+
+        <p class="titulo-grupo"><span>Catálogos</span></p>
+        <a class="item-lateral{% if seccion == 'ejercicios' %} activo{% endif %}" href="{% url 'panel_ejercicios' %}" title="Ejercicios"{% if seccion == 'ejercicios' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-dumbbell"></i><span>Ejercicios</span>
+        </a>
+        <a class="item-lateral{% if seccion == 'alimentos' %} activo{% endif %}" href="{% url 'panel_alimentos' %}" title="Alimentos"{% if seccion == 'alimentos' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-apple-whole"></i><span>Alimentos</span>
+        </a>
+
+        <a class="item-lateral item-abajo" href="{% url 'inicio' %}" title="Ver el sitio">
+            <i class="fa-solid fa-house"></i><span>Ver el sitio</span>
+        </a>
+    </aside>
+    <script>
+        // Recordar si la barra estaba contraída (antes de dibujar, para que no "salte")
+        try {
+            if (window.innerWidth <= 768 || localStorage.getItem("gmf-barra") === "contraida") {
+                document.getElementById("barra-lateral").classList.remove("expandida");
+            }
+        } catch (e) { /* sin almacenamiento: queda abierta */ }
+    </script>
+
+    <section id="contenido">
+        {% block panel %}{% endblock %}
+    </section>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/panel.js' %}"></script>{% endblock %}

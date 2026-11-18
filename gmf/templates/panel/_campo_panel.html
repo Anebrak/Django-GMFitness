@@ -1,0 +1,35 @@
+{% load gmf_extras %}
+{# Un campo del formulario del panel, a partir de su descripción en views_panel.py (CAMPOS_...) #}
+{% with valor=valores|dato:campo.nombre error=errores|dato:campo.nombre %}
+<div class="grupo-campo{% if error %} con-error{% endif %}{% if campo.completo or campo.tipo == 'textarea' %} campo-completo{% endif %}{% if campo.tipo == 'checkbox' %} campo-check{% endif %}"
+     {% if campo.solo_crear %}data-solo-crear{% if editando_id %} hidden{% endif %}{% endif %}
+     {% if campo.solo_profesional %}data-solo-profesional{% endif %}>
+    {% if campo.tipo == "checkbox" %}
+        <label class="interruptor">
+            <input type="checkbox" name="{{ campo.nombre }}" id="id_{{ campo.nombre }}"{% if not modal_abierto or valor == "on" %} checked{% endif %}>
+            <span class="interruptor-pista" aria-hidden="true"></span>
+            {{ campo.etiqueta }}
+        </label>
+    {% else %}
+        <label for="id_{{ campo.nombre }}">{{ campo.etiqueta }}{% if campo.obligatorio %} <span class="obligatorio" aria-hidden="true">*</span>{% endif %}</label>
+        {% if campo.tipo == "select" %}
+            <select name="{{ campo.nombre }}" id="id_{{ campo.nombre }}"{% if campo.obligatorio %} required{% endif %}>
+                {% for opcion, texto in campo.opciones %}
+                    <option value="{{ opcion }}"{% if valor|stringformat:"s" == opcion|stringformat:"s" %} selected{% endif %}>{{ texto }}</option>
+                {% endfor %}
+            </select>
+        {% elif campo.tipo == "textarea" %}
+            <textarea name="{{ campo.nombre }}" id="id_{{ campo.nombre }}" rows="3"{% if campo.marcador %} placeholder="{{ campo.marcador }}"{% endif %}>{{ valor }}</textarea>
+        {% else %}
+            <input name="{{ campo.nombre }}" id="id_{{ campo.nombre }}" value="{{ valor }}"
+                   type="{% if campo.tipo == 'email' %}email{% elif campo.tipo == 'url' %}url{% elif campo.tipo == 'entero' %}number{% else %}text{% endif %}"
+                   {% if campo.tipo == "decimal" %}inputmode="decimal"{% endif %}
+                   {% if campo.max_largo %}maxlength="{{ campo.max_largo }}"{% endif %}
+                   {% if campo.marcador %}placeholder="{{ campo.marcador }}"{% endif %}
+                   {% if campo.obligatorio %}required{% endif %}>
+        {% endif %}
+    {% endif %}
+    {% for mensaje in error %}<p class="error-campo">{{ mensaje }}</p>{% endfor %}
+    {% if campo.ayuda %}<p class="ayuda-campo">{{ campo.ayuda }}</p>{% endif %}
+</div>
+{% endwith %}

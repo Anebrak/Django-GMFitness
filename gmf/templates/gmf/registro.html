@@ -1,0 +1,44 @@
+{% extends "gmf/base.html" %}
+{% load static %}
+
+{% block titulo %}Registro | GMFitness{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{% static 'gmf/css/cuenta.css' %}">{% endblock %}
+
+{% block contenido %}
+    <section class="tarjeta-cuenta tarjeta-ancha">
+        <h1>Crea tu cuenta</h1>
+        <p class="texto-ayuda">Empiezas con el plan Gratis. Puedes pasarte a Premium cuando quieras.</p>
+
+        {% if form.non_field_errors %}
+            <div class="errores-generales" role="alert">
+                {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="campos campos-dos">
+                {% include "gmf/_campo.html" with campo=form.first_name %}
+                {% include "gmf/_campo.html" with campo=form.last_name %}
+                {% include "gmf/_campo.html" with campo=form.email completo=True %}
+                {% include "gmf/_campo.html" with campo=form.password1 %}
+                <div class="grupo-campo{% if form.password2.errors %} con-error{% endif %}">
+                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    <div class="campo-clave">
+                        {{ form.password2 }}
+                        <button type="button" class="btn-ver-clave" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                    {% for error in form.password2.errors %}<p class="error-campo">{{ error }}</p>{% endfor %}
+                    <p class="error-campo" id="aviso-coincidencia" aria-live="polite"></p>
+                </div>
+            </div>
+            <div class="acciones-formulario">
+                <button type="submit" class="boton-primario boton-grande boton-ancho">Crear cuenta</button>
+            </div>
+        </form>
+
+        <p class="cambiar-cuenta">¿Ya tienes cuenta? <a href="{% url 'gmf:ingresar' %}">Ingresa aquí</a></p>
+    </section>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'gmf/js/cuenta.js' %}"></script>{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static gmf_extras %}
+
+{% block titulo %}GMFitness | Entrena, come y progresa{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{% static 'css/inicio.css' %}">{% endblock %}
+
+{% block menu_secciones %}
+    <ul id="menu-secciones">
+        <li><a href="#oferta">Ofrecemos</a></li>
+        <li><a href="#planes">Planes</a></li>
+        <li><a href="#profesionales">Profesionales</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+    </ul>
+{% endblock %}
+
+{% block boton_menu %}
+    <button type="button" id="btn-menu" aria-label="Abrir menú" aria-controls="menu-secciones" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+{% endblock %}
+
+{% block contenido %}
+
+    <!-- ================= PORTADA ================= -->
+    <section id="portada">
+        <div class="contenedor">
+            <div>
+                <span class="etiqueta">Tu gimnasio, ahora en línea</span>
+                <h1>Entrena, come y progresa <span class="texto-naranja">con tu equipo profesional</span></h1>
+                <p>Rutinas, dietas y seguimiento de tu progreso en un solo lugar, guiado por los
+                    entrenadores, nutricionistas y fisioterapeutas de tu gimnasio.</p>
+                <div id="portada-acciones">
+                    {% if user.is_authenticated %}
+                        <a class="boton-primario boton-grande" href="#planes">Ver planes</a>
+                    {% else %}
+                        <a class="boton-primario boton-grande" href="{% url 'registro' %}">Crear cuenta gratis</a>
+                        <a class="boton-secundario boton-grande" href="#planes">Ver planes</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="portada-tarjeta" aria-hidden="true">
+                <div class="portada-fila">
+                    <div class="icono-caja"><i class="fa-solid fa-dumbbell"></i></div>
+                    <div>
+                        <h3>Rutina de la semana</h3>
+                        <p>Ejercicios, series y repeticiones por día</p>
+                    </div>
+                </div>
+                <div class="portada-fila">
+                    <div class="icono-caja"><i class="fa-solid fa-bowl-food"></i></div>
+                    <div>
+                        <h3>Diario de comidas</h3>
+                        <p>Calorías y macros contra tus metas</p>
+                    </div>
+                </div>
+                <div class="portada-fila">
+                    <div class="icono-caja"><i class="fa-solid fa-chart-line"></i></div>
+                    <div>
+                        <h3>Tu progreso</h3>
+                        <p>Peso, medidas y objetivos en el tiempo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= LO QUE OFRECEMOS ================= -->
+    <section class="seccion" id="oferta">
+        <div class="contenedor">
+            <div class="titulo-seccion">
+                <h2>Lo que ofrecemos</h2>
+                <p>Todo lo que necesitas para entrenar con un plan.</p>
+            </div>
+            <div id="cajas-oferta">
+                <article class="caja-oferta">
+                    <div class="icono-caja"><i class="fa-solid fa-dumbbell"></i></div>
+                    <div>
+                        <h3>Rutinas personalizadas</h3>
+                        <p>Organizadas por semanas y días, creadas por ti o por tu entrenador.</p>
+                    </div>
+                </article>
+                <article class="caja-oferta">
+                    <div class="icono-caja"><i class="fa-solid fa-bowl-food"></i></div>
+                    <div>
+                        <h3>Planes de dieta</h3>
+                        <p>Registra lo que comes y compáralo con tus metas diarias de calorías y macros.</p>
+                    </div>
+                </article>
+                <article class="caja-oferta">
+                    <div class="icono-caja"><i class="fa-solid fa-chart-line"></i></div>
+                    <div>
+                        <h3>Seguimiento de progreso</h3>
+                        <p>Peso, medidas corporales y objetivos con su historial.</p>
+                    </div>
+                </article>
+                <article class="caja-oferta">
+                    <div class="icono-caja"><i class="fa-solid fa-user-doctor"></i></div>
+                    <div>
+                        <h3>Acompañamiento profesional</h3>
+                        <p>Habla con tu entrenador, nutricionista y fisioterapeuta, y agenda tus citas.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PLANES ================= -->
+    <section class="seccion" id="planes">
+        <div class="contenedor">
+            <div class="titulo-seccion">
+                <h2>Planes</h2>
+                <p>Empieza gratis y pásate a Premium cuando quieras.</p>
+            </div>
+            <div id="cajas-planes">
+                <article class="plan">
+                    <h3>Gratis</h3>
+                    <p class="plan-duracion">Para siempre</p>
+                    <p class="plan-precio">$0</p>
+                    <p class="plan-pago"><i class="fa-regular fa-circle-check"></i> Sin pagos</p>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> Hasta 2 rutinas y 2 dietas activas</li>
+                        <li><i class="fa-solid fa-check"></i> Información básica de rutinas y dietas</li>
+                        <li><i class="fa-solid fa-check"></i> Edita tu rutina o dieta una vez por semana</li>
+                        <li><i class="fa-solid fa-check"></i> Ve tu rutina y tu dieta actuales</li>
+                    </ul>
+                    {% if plan_actual == "GRATIS" %}
+                        <button type="button" class="boton-secundario boton-ancho" disabled>Tu plan actual</button>
+                    {% elif not user.is_authenticated %}
+                        <a class="boton-secundario boton-ancho" href="{% url 'registro' %}">Empezar gratis</a>
+                    {% endif %}
+                </article>
+
+                {% for plan in planes_premium %}
+                    <article class="plan{% if forloop.first %} plan-destacado{% endif %}">
+                        {% if forloop.first %}<span class="etiqueta">Recomendado</span>{% endif %}
+                        <h3>{{ plan.get_tipo_display }}</h3>
+                        <p class="plan-duracion">{{ plan.get_duracion_display }}</p>
+                        <p class="plan-precio">
+                            {{ plan.precio|pesos }}
+                            <small>/ {% if plan.duracion == "ANUAL" %}año{% else %}mes{% endif %}</small>
+                        </p>
+                        <p class="plan-pago">
+                            <i class="fa-regular fa-calendar"></i>
+                            Se paga {% if plan.duracion == "ANUAL" %}anualmente{% else %}mensualmente{% endif %}
+                        </p>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Rutinas y dietas ilimitadas</li>
+                            <li><i class="fa-solid fa-check"></i> Personalización avanzada: descansos, progresión y macros por comida</li>
+                            <li><i class="fa-solid fa-check"></i> Edita tus rutinas y dietas cuando quieras</li>
+                            <li><i class="fa-solid fa-check"></i> Todo tu historial y gráficas de evolución</li>
+                        </ul>
+                        {% if plan_actual == "PREMIUM" %}
+                            <button type="button" class="boton-primario boton-ancho" disabled>Ya eres Premium</button>
+                        {% elif user.is_authenticated %}
+                            <button type="button" class="boton-primario boton-ancho" disabled>Pago en línea muy pronto</button>
+                        {% else %}
+                            <a class="boton-primario boton-ancho" href="{% url 'registro' %}">Elegir Premium</a>
+                        {% endif %}
+                    </article>
+                {% empty %}
+                    <article class="plan plan-destacado">
+                        <span class="etiqueta">Muy pronto</span>
+                        <h3>Premium</h3>
+                        <p class="plan-duracion">Estamos preparando los precios</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Rutinas y dietas ilimitadas</li>
+                            <li><i class="fa-solid fa-check"></i> Personalización avanzada</li>
+                            <li><i class="fa-solid fa-check"></i> Todo tu historial y gráficas de evolución</li>
+                        </ul>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PROFESIONALES ================= -->
+    <section class="seccion" id="profesionales">
+        <div class="contenedor">
+            <div class="titulo-seccion">
+                <h2>Nuestro equipo</h2>
+                <p>Profesionales que te acompañan en tu proceso.</p>
+            </div>
+            {% if profesionales %}
+                <div id="cajas-profesionales">
+                    {% for pro in profesionales %}
+                        <article class="profesional">
+                            <div class="usuario-bola" aria-hidden="true">{{ pro.usuario|iniciales }}</div>
+                            <h3>{{ pro.usuario.get_full_name }}</h3>
+                            <span class="etiqueta">{{ pro.rol }}</span>
+                            {% if pro.especialidad %}<p>{{ pro.especialidad }}</p>{% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="vacio">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <p>Muy pronto conocerás a nuestro equipo de profesionales.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block pie %}
+    <!-- ================= CONTACTO Y SEDES ================= -->
+    <footer id="contacto">
+        <div class="contenedor">
+            <div id="pie-superior">
+                <div id="pie-marca">
+                    <a class="logo" href="{% url 'inicio' %}">GM<span>Fitness</span></a>
+                    <p>Entrena con un plan y con el acompañamiento de tu equipo profesional.</p>
+                </div>
+                <div id="pie-sedes">
+                    <h2>Nuestras sedes</h2>
+                    {% if sedes %}
+                        <div id="cajas-sedes">
+                            {% for sede in sedes %}
+                                <article class="sede">
+                                    <h3>{{ sede.nombre }}</h3>
+                                    <ul>
+                                        <li><i class="fa-solid fa-location-dot"></i> {{ sede.direccion }}, {{ sede.ciudad }}</li>
+                                        <li><i class="fa-solid fa-phone"></i> <a href="tel:{{ sede.telefono }}">{{ sede.telefono }}</a></li>
+                                        {% if sede.correo %}
+                                            <li><i class="fa-regular fa-envelope"></i> <a href="mailto:{{ sede.correo }}">{{ sede.correo }}</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="vacio">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <p>Pronto publicaremos nuestras sedes.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="pie-inferior">© {% now "Y" %} GMFitness</div>
+        </div>
+    </footer>
+{% endblock %}

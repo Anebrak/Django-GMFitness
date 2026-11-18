@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Registro | GMFitness{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{% static 'css/cuenta.css' %}">{% endblock %}
+
+{% block contenido %}
+    <section class="tarjeta-cuenta tarjeta-ancha">
+        <h1>Crea tu cuenta</h1>
+        <p class="texto-ayuda">Empiezas con el plan Gratis. Puedes pasarte a Premium cuando quieras.</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="campos campos-dos">
+                {% include "_campo.html" with nombre="first_name" etiqueta="Nombre" valor=form.first_name errores=errores.first_name autocompletar="given-name" enfoque=True %}
+                {% include "_campo.html" with nombre="last_name" etiqueta="Apellido" valor=form.last_name errores=errores.last_name autocompletar="family-name" %}
+                {% include "_campo.html" with nombre="email" etiqueta="Correo" tipo="email" valor=form.email errores=errores.email autocompletar="email" marcador="tu@correo.com" completo=True %}
+                {% include "_campo.html" with nombre="password1" etiqueta="Contraseña" tipo="password" errores=errores.password1 autocompletar="new-password" ayuda=ayuda_clave %}
+                <div class="grupo-campo{% if errores.password2 %} con-error{% endif %}">
+                    <label for="id_password2">Confirmar contraseña</label>
+                    <div class="campo-clave">
+                        <input type="password" name="password2" id="id_password2" autocomplete="new-password" required>
+                        <button type="button" class="btn-ver-clave" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                    {% for error in errores.password2 %}<p class="error-campo">{{ error }}</p>{% endfor %}
+                    <p class="error-campo" id="aviso-coincidencia" aria-live="polite"></p>
+                </div>
+            </div>
+            <div class="acciones-formulario">
+                <button type="submit" class="boton-primario boton-grande boton-ancho">Crear cuenta</button>
+            </div>
+        </form>
+
+        <p class="cambiar-cuenta">¿Ya tienes cuenta? <a href="{% url 'ingresar' %}">Ingresa aquí</a></p>
+    </section>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/cuenta.js' %}"></script>{% endblock %}

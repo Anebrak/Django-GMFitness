@@ -1,0 +1,48 @@
+{% extends "panel/base_seccion.html" %}
+
+{% block filtros %}
+    <select name="categoria" class="filtro" aria-label="Categoría">
+        {% for valor, texto in opciones_categoria %}
+            <option value="{{ valor }}"{% if valor == categoria %} selected{% endif %}>{{ texto }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block columnas %}
+    <th>Alimento</th>
+    <th class="numero">Kcal</th>
+    <th class="numero">Proteínas</th>
+    <th class="numero">Carbohidratos</th>
+    <th class="numero">Grasas</th>
+    <th>Porción típica</th>
+    <th>Estado</th>
+{% endblock %}
+
+{% block filas %}
+    {% for a in pagina %}
+        <tr{% if not a.activo %} class="fila-inactiva"{% endif %}>
+            <td>
+                <div class="celda-persona">
+                    {% if a.imagen_url %}
+                        <img class="miniatura" src="{{ a.imagen_url }}" alt="" loading="lazy">
+                    {% else %}
+                        <span class="miniatura sin-imagen" aria-hidden="true"><i class="fa-solid fa-apple-whole"></i></span>
+                    {% endif %}
+                    <div>
+                        <strong>{{ a.nombre }}</strong>
+                        <small>{{ a.categoria|default:"Sin categoría" }}</small>
+                    </div>
+                </div>
+            </td>
+            <td class="numero">{{ a.kcal|floatformat:"-1" }}</td>
+            <td class="numero">{{ a.proteinas|floatformat:"-1" }} g</td>
+            <td class="numero">{{ a.carbohidratos|floatformat:"-1" }} g</td>
+            <td class="numero">{{ a.grasas|floatformat:"-1" }} g</td>
+            <td>{{ a.porcion_gramos|floatformat:"-1" }} g{% if a.porcion_nombre %} <small class="en-linea">({{ a.porcion_nombre }})</small>{% endif %}</td>
+            <td><span class="etiqueta-estado {% if a.activo %}activo{% else %}inactivo{% endif %}">{% if a.activo %}Activo{% else %}Inactivo{% endif %}</span></td>
+            {% include "panel/_acciones.html" with id=a.pk activo=a.activo nombre=a.nombre %}
+        </tr>
+    {% empty %}
+        <tr><td colspan="8" class="sin-resultados"><i class="fa-solid fa-apple-whole"></i>No hay alimentos con esos filtros.</td></tr>
+    {% endfor %}
+{% endblock %}

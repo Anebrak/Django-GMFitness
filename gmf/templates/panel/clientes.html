@@ -1,0 +1,51 @@
+{% extends "panel/base_seccion.html" %}
+{% load gmf_extras %}
+
+{% block filtros %}
+    <select name="plan" class="filtro" aria-label="Plan">
+        {% for valor, texto in opciones_plan %}
+            <option value="{{ valor }}"{% if valor == plan %} selected{% endif %}>{{ texto }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block columnas %}
+    <th>Cliente</th>
+    <th>Plan</th>
+    <th>Sexo</th>
+    <th>Sede</th>
+    <th>Teléfono</th>
+    <th>Registro</th>
+    <th>Estado</th>
+{% endblock %}
+
+{% block filas %}
+    {% for c in pagina %}
+        <tr{% if not c.usuario.is_active %} class="fila-inactiva"{% endif %}>
+            <td>
+                <div class="celda-persona">
+                    <span class="usuario-bola" aria-hidden="true">{{ c.usuario|iniciales }}</span>
+                    <div>
+                        <strong>{{ c.usuario.get_full_name }}</strong>
+                        <small>{{ c.usuario.email }}</small>
+                    </div>
+                </div>
+            </td>
+            <td>
+                {% if c.es_premium %}
+                    <span class="etiqueta-plan premium"><i class="fa-solid fa-crown"></i> Premium</span>
+                {% else %}
+                    <span class="etiqueta-plan">Gratis</span>
+                {% endif %}
+            </td>
+            <td>{{ c.get_sexo_display|default:"—" }}</td>
+            <td>{{ c.usuario.sede.nombre|default:"—" }}</td>
+            <td>{{ c.usuario.telefono|default:"—" }}</td>
+            <td>{{ c.usuario.date_joined|date:"d/m/Y" }}</td>
+            <td><span class="etiqueta-estado {% if c.usuario.is_active %}activo{% else %}inactivo{% endif %}">{% if c.usuario.is_active %}Activo{% else %}Inactivo{% endif %}</span></td>
+            {% include "panel/_acciones.html" with id=c.usuario_id activo=c.usuario.is_active nombre=c.usuario.get_full_name usuario=True %}
+        </tr>
+    {% empty %}
+        <tr><td colspan="8" class="sin-resultados"><i class="fa-solid fa-users"></i>No hay clientes con esos filtros.</td></tr>
+    {% endfor %}
+{% endblock %}

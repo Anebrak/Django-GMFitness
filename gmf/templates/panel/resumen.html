@@ -1,0 +1,100 @@
+{% extends "panel/base_panel.html" %}
+{% load gmf_extras %}
+
+{% block titulo_panel %}Resumen{% endblock %}
+
+{% block panel %}
+    <div id="encabezado-modulo">
+        <div>
+            <h1 id="titulo-modulo">Hola, {{ user.first_name|default:"administrador" }}</h1>
+            <p class="descripcion-modulo">Así va el gimnasio en {{ mes|date:"F"|lower }} de {{ mes|date:"Y" }}.</p>
+        </div>
+    </div>
+
+    <!-- ============ Tarjetas de totales ============ -->
+    <div id="tarjetas-resumen">
+        <a class="tarjeta-dato" href="{% url 'panel_clientes' %}?estado=activos">
+            <span class="icono-dato"><i class="fa-solid fa-users"></i></span>
+            <span class="valor-dato">{{ total_clientes }}</span>
+            <span class="nombre-dato">Clientes activos</span>
+        </a>
+        <a class="tarjeta-dato" href="{% url 'panel_clientes' %}?plan=premium">
+            <span class="icono-dato"><i class="fa-solid fa-crown"></i></span>
+            <span class="valor-dato">{{ total_premium }}</span>
+            <span class="nombre-dato">Clientes Premium</span>
+        </a>
+        <a class="tarjeta-dato" href="{% url 'panel_clientes' %}">
+            <span class="icono-dato"><i class="fa-solid fa-user-plus"></i></span>
+            <span class="valor-dato">{{ nuevos_mes }}</span>
+            <span class="nombre-dato">Nuevos este mes</span>
+        </a>
+        <div class="tarjeta-dato">
+            <span class="icono-dato"><i class="fa-solid fa-sack-dollar"></i></span>
+            <span class="valor-dato">{{ ingresos_mes|pesos }}</span>
+            <span class="nombre-dato">Ingresos del mes</span>
+        </div>
+        <a class="tarjeta-dato" href="{% url 'panel_empleados' %}?estado=activos">
+            <span class="icono-dato"><i class="fa-solid fa-user-tie"></i></span>
+            <span class="valor-dato">{{ total_empleados }}</span>
+            <span class="nombre-dato">Empleados activos</span>
+        </a>
+        <a class="tarjeta-dato" href="{% url 'panel_sedes' %}?estado=activos">
+            <span class="icono-dato"><i class="fa-solid fa-building"></i></span>
+            <span class="valor-dato">{{ total_sedes }}</span>
+            <span class="nombre-dato">Sedes activas</span>
+        </a>
+    </div>
+
+    <div id="paneles-resumen">
+        <!-- ============ Últimos clientes ============ -->
+        <section class="panel-caja">
+            <div class="panel-caja-titulo">
+                <h2>Últimos clientes registrados</h2>
+                <a href="{% url 'panel_clientes' %}">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            {% if ultimos_clientes %}
+                <ul class="lista-resumen">
+                    {% for c in ultimos_clientes %}
+                        <li>
+                            <span class="usuario-bola" aria-hidden="true">{{ c.usuario|iniciales }}</span>
+                            <div>
+                                <strong>{{ c.usuario.get_full_name }}</strong>
+                                <small>{{ c.usuario.email }}</small>
+                            </div>
+                            <span class="fecha-lista">{{ c.usuario.date_joined|date:"d/m/Y" }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="vacio-panel">Todavía no hay clientes registrados.</p>
+            {% endif %}
+        </section>
+
+        <!-- ============ Equipo y planes ============ -->
+        <section class="panel-caja">
+            <div class="panel-caja-titulo">
+                <h2>Equipo por rol</h2>
+                <a href="{% url 'panel_empleados' %}">Ver empleados <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <ul class="lista-conteo">
+                {% for fila in equipo %}
+                    <li><span>{{ fila.rol }}</span><strong>{{ fila.total }}</strong></li>
+                {% endfor %}
+            </ul>
+
+            <div class="panel-caja-titulo con-margen">
+                <h2>Planes a la venta</h2>
+                <a href="{% url 'panel_membresias' %}">Ver membresías <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            {% if membresias %}
+                <ul class="lista-conteo">
+                    {% for m in membresias %}
+                        <li><span>{{ m }}</span><strong>{{ m.precio|pesos }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="vacio-panel">No hay membresías activas: en el inicio solo se ve el plan Gratis.</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

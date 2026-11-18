@@ -1,0 +1,15 @@
+{# Un campo de formulario con su etiqueta, ayuda y errores. #}
+{# Uso: {% include "_campo.html" with nombre="email" etiqueta="Correo" tipo="email" valor=form.email errores=errores.email %} #}
+<div class="grupo-campo{% if errores %} con-error{% endif %}{% if completo %} campo-completo{% endif %}">
+    <label for="id_{{ nombre }}">{{ etiqueta }}</label>
+    {% if tipo == "password" %}
+        <div class="campo-clave">
+            <input type="password" name="{{ nombre }}" id="id_{{ nombre }}"{% if autocompletar %} autocomplete="{{ autocompletar }}"{% endif %}{% if marcador %} placeholder="{{ marcador }}"{% endif %}{% if enfoque %} autofocus{% endif %} required>
+            <button type="button" class="btn-ver-clave" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button>
+        </div>
+    {% else %}
+        <input type="{{ tipo|default:'text' }}" name="{{ nombre }}" id="id_{{ nombre }}" value="{{ valor|default:'' }}"{% if autocompletar %} autocomplete="{{ autocompletar }}"{% endif %}{% if marcador %} placeholder="{{ marcador }}"{% endif %}{% if enfoque %} autofocus{% endif %} required>
+    {% endif %}
+    {% for error in errores %}<p class="error-campo">{{ error }}</p>{% endfor %}
+    {% if ayuda %}<div class="ayuda-campo">{{ ayuda|safe }}</div>{% endif %}
+</div>

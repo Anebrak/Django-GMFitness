@@ -6,16 +6,16 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="usuario" value="&lt;i&gt;«abstract»&lt;/i&gt;&lt;br&gt;&lt;i&gt;Usuario&lt;/i&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1500" y="60" width="400" height="372" />
+          <mxGeometry as="geometry" x="1500" y="60" width="400" height="355" />
         </mxCell>
-        <mxCell id="usuario-a" value="- idUsuario: INT (PK)&lt;br&gt;- numeroIdentidad: VARCHAR (UNIQUE)&lt;br&gt;- nombre: VARCHAR&lt;br&gt;- apellido: VARCHAR&lt;br&gt;- fechaNacimiento: DATE [0..1]&lt;br&gt;- telefono: VARCHAR [0..1]&lt;br&gt;- email: VARCHAR (UNIQUE)&lt;br&gt;- contrasenaHash: VARCHAR&lt;br&gt;- rol: RolUsuario&lt;br&gt;- activo: BOOLEAN&lt;br&gt;- fechaRegistro: TIMESTAMP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="usuario">
-          <mxGeometry as="geometry" y="40" width="400" height="195" />
+        <mxCell id="usuario-a" value="- idUsuario: INT (PK)&lt;br&gt;- nombre: VARCHAR&lt;br&gt;- apellido: VARCHAR&lt;br&gt;- fechaNacimiento: DATE [0..1]&lt;br&gt;- telefono: VARCHAR [0..1]&lt;br&gt;- email: VARCHAR (UNIQUE)&lt;br&gt;- contrasenaHash: VARCHAR&lt;br&gt;- rol: RolUsuario&lt;br&gt;- activo: BOOLEAN&lt;br&gt;- fechaRegistro: TIMESTAMP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="usuario">
+          <mxGeometry as="geometry" y="40" width="400" height="178" />
         </mxCell>
         <mxCell id="usuario-s" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="usuario">
-          <mxGeometry as="geometry" y="235" width="400" height="8" />
+          <mxGeometry as="geometry" y="218" width="400" height="8" />
         </mxCell>
         <mxCell id="usuario-m" value="+ login(email: VARCHAR, contrasena: VARCHAR): BOOLEAN&lt;br&gt;+ logout(): void&lt;br&gt;+ validarRegistro(): BOOLEAN&lt;br&gt;+ validarIngreso(): BOOLEAN&lt;br&gt;+ redirigirUsuario(): void&lt;br&gt;+ actualizarPerfil(datos): void&lt;br&gt;+ calcularEdad(): INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="usuario">
-          <mxGeometry as="geometry" y="243" width="400" height="129" />
+          <mxGeometry as="geometry" y="226" width="400" height="129" />
         </mxCell>
         <mxCell id="sede" value="Sede" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="1000" y="60" width="400" height="222" />
@@ -54,9 +54,9 @@
           <mxGeometry as="geometry" y="110" width="400" height="44" />
         </mxCell>
         <mxCell id="cliente" value="Cliente" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1500" y="582" width="400" height="630" />
+          <mxGeometry as="geometry" x="1500" y="565" width="400" height="630" />
         </mxCell>
-        <mxCell id="cliente-a" value="- sexo: Sexo&lt;br&gt;- peso: DECIMAL (kg) [0..1]&lt;br&gt;- altura: DECIMAL (cm) [0..1]&lt;br&gt;- porcentajeGraso: DECIMAL [0..1]&lt;br&gt;- /plan: GRATIS | PREMIUM" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="cliente">
+        <mxCell id="cliente-a" value="- sexo: Sexo [0..1]&lt;br&gt;- peso: DECIMAL (kg) [0..1]&lt;br&gt;- altura: DECIMAL (cm) [0..1]&lt;br&gt;- porcentajeGraso: DECIMAL [0..1]&lt;br&gt;- /plan: GRATIS | PREMIUM" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="cliente">
           <mxGeometry as="geometry" y="26" width="400" height="93" />
         </mxCell>
         <mxCell id="cliente-s" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="cliente">
@@ -66,7 +66,7 @@
           <mxGeometry as="geometry" y="127" width="400" height="503" />
         </mxCell>
         <mxCell id="admin" value="Administrador" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2000" y="582" width="400" height="158" />
+          <mxGeometry as="geometry" x="2000" y="565" width="400" height="158" />
         </mxCell>
         <mxCell id="admin-a" value="" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="admin">
           <mxGeometry as="geometry" y="26" width="400" height="12" />
@@ -78,7 +78,7 @@
           <mxGeometry as="geometry" y="46" width="400" height="112" />
         </mxCell>
         <mxCell id="profesional" value="&lt;i&gt;«abstract»&lt;/i&gt;&lt;br&gt;&lt;i&gt;Profesional&lt;/i&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2500" y="582" width="400" height="151" />
+          <mxGeometry as="geometry" x="2500" y="565" width="400" height="151" />
         </mxCell>
         <mxCell id="profesional-a" value="- especialidad: VARCHAR&lt;br&gt;- tarjetaProfesional: VARCHAR [0..1]&lt;br&gt;- /numClientes: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="profesional">
           <mxGeometry as="geometry" y="40" width="400" height="59" />
@@ -90,7 +90,7 @@
           <mxGeometry as="geometry" y="107" width="400" height="44" />
         </mxCell>
         <mxCell id="entrenador" value="Entrenador" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="3000" y="582" width="400" height="192" />
+          <mxGeometry as="geometry" x="3000" y="565" width="400" height="192" />
         </mxCell>
         <mxCell id="entrenador-a" value="" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="entrenador">
           <mxGeometry as="geometry" y="26" width="400" height="12" />
@@ -102,7 +102,7 @@
           <mxGeometry as="geometry" y="46" width="400" height="146" />
         </mxCell>
         <mxCell id="nutricionista" value="Nutricionista" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="1362" width="400" height="209" />
+          <mxGeometry as="geometry" x="500" y="1345" width="400" height="209" />
         </mxCell>
         <mxCell id="nutricionista-a" value="" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="nutricionista">
           <mxGeometry as="geometry" y="26" width="400" height="12" />
@@ -114,7 +114,7 @@
           <mxGeometry as="geometry" y="46" width="400" height="163" />
         </mxCell>
         <mxCell id="fisio" value="Fisioterapeuta" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2500" y="1362" width="400" height="175" />
+          <mxGeometry as="geometry" x="2500" y="1345" width="400" height="175" />
         </mxCell>
         <mxCell id="fisio-a" value="" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="fisio">
           <mxGeometry as="geometry" y="26" width="400" height="12" />
@@ -126,7 +126,7 @@
           <mxGeometry as="geometry" y="46" width="400" height="129" />
         </mxCell>
         <mxCell id="disponibilidad" value="Disponibilidad" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="3000" y="1362" width="400" height="137" />
+          <mxGeometry as="geometry" x="3000" y="1345" width="400" height="137" />
         </mxCell>
         <mxCell id="disponibilidad-a" value="- idDisponibilidad: INT (PK)&lt;br&gt;- diaSemana: DiaSemana&lt;br&gt;- horaInicio: TIME&lt;br&gt;- horaFin: TIME" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="disponibilidad">
           <mxGeometry as="geometry" y="26" width="400" height="76" />
@@ -138,7 +138,7 @@
           <mxGeometry as="geometry" y="110" width="400" height="27" />
         </mxCell>
         <mxCell id="cita" value="Cita" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2000" y="1362" width="400" height="256" />
+          <mxGeometry as="geometry" x="2000" y="1345" width="400" height="256" />
         </mxCell>
         <mxCell id="cita-a" value="- idCita: INT (PK)&lt;br&gt;- fechaInicio: TIMESTAMP&lt;br&gt;- fechaFin: TIMESTAMP&lt;br&gt;- estado: EstadoCita&lt;br&gt;- motivo: VARCHAR&lt;br&gt;- descripcion: VARCHAR [0..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="cita">
           <mxGeometry as="geometry" y="26" width="400" height="110" />
@@ -150,7 +150,7 @@
           <mxGeometry as="geometry" y="144" width="400" height="112" />
         </mxCell>
         <mxCell id="membresia" value="Membresia" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="582" width="400" height="205" />
+          <mxGeometry as="geometry" x="0" y="565" width="400" height="205" />
         </mxCell>
         <mxCell id="membresia-a" value="- idMembresia: INT (PK)&lt;br&gt;- tipo: TipoMembresia&lt;br&gt;- duracion: DuracionMembresia&lt;br&gt;- precio: DECIMAL&lt;br&gt;- descripcion: VARCHAR [0..1]&lt;br&gt;- activa: BOOLEAN" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="membresia">
           <mxGeometry as="geometry" y="26" width="400" height="110" />
@@ -162,7 +162,7 @@
           <mxGeometry as="geometry" y="144" width="400" height="61" />
         </mxCell>
         <mxCell id="suscripcion" value="Suscripcion" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="582" width="400" height="188" />
+          <mxGeometry as="geometry" x="500" y="565" width="400" height="188" />
         </mxCell>
         <mxCell id="suscripcion-a" value="- idSuscripcion: INT (PK)&lt;br&gt;- fechaInicio: DATE&lt;br&gt;- fechaFin: DATE&lt;br&gt;- estado: EstadoSuscripcion" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="suscripcion">
           <mxGeometry as="geometry" y="26" width="400" height="76" />
@@ -198,7 +198,7 @@
           <mxGeometry as="geometry" y="161" width="400" height="95" />
         </mxCell>
         <mxCell id="progfis" value="ProgresoFisico" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1000" y="1362" width="400" height="239" />
+          <mxGeometry as="geometry" x="1000" y="1345" width="400" height="239" />
         </mxCell>
         <mxCell id="progfis-a" value="- idProgreso: INT (PK)&lt;br&gt;- fecha: DATE&lt;br&gt;- peso: DECIMAL (kg)&lt;br&gt;- altura: DECIMAL (cm) [0..1]&lt;br&gt;- porcentajeGraso: DECIMAL [0..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="progfis">
           <mxGeometry as="geometry" y="26" width="400" height="93" />
@@ -210,7 +210,7 @@
           <mxGeometry as="geometry" y="127" width="400" height="112" />
         </mxCell>
         <mxCell id="objetivo" value="Objetivo" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1500" y="1362" width="400" height="171" />
+          <mxGeometry as="geometry" x="1500" y="1345" width="400" height="171" />
         </mxCell>
         <mxCell id="objetivo-a" value="- idObjetivo: INT (PK)&lt;br&gt;- fecha: DATE&lt;br&gt;- pesoInicial: DECIMAL (kg)&lt;br&gt;- pesoMeta: DECIMAL (kg)&lt;br&gt;- porcentajeGrasoMeta: DECIMAL&lt;br&gt;- activo: BOOLEAN" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="objetivo">
           <mxGeometry as="geometry" y="26" width="400" height="110" />
@@ -222,7 +222,7 @@
           <mxGeometry as="geometry" y="144" width="400" height="27" />
         </mxCell>
         <mxCell id="medida" value="MedidaCorporal" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1500" y="1768" width="400" height="154" />
+          <mxGeometry as="geometry" x="1500" y="1751" width="400" height="154" />
         </mxCell>
         <mxCell id="medida-a" value="- idMedida: INT (PK)&lt;br&gt;- parte: ParteCuerpo&lt;br&gt;- fecha: DATE&lt;br&gt;- valorCm: DECIMAL (cm)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="medida">
           <mxGeometry as="geometry" y="26" width="400" height="76" />
@@ -234,7 +234,7 @@
           <mxGeometry as="geometry" y="110" width="400" height="44" />
         </mxCell>
         <mxCell id="progej" value="ProgresoEjercicio" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2000" y="2242" width="400" height="222" />
+          <mxGeometry as="geometry" x="2000" y="2225" width="400" height="222" />
         </mxCell>
         <mxCell id="progej-a" value="- idRegistro: INT (PK)&lt;br&gt;- fecha: DATE&lt;br&gt;- seriesRealizadas: INT [0..1]&lt;br&gt;- repeticionesRealizadas: INT&lt;br&gt;- cargaKg: DECIMAL (kg)&lt;br&gt;- intensidad: DECIMAL [0..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="progej">
           <mxGeometry as="geometry" y="26" width="400" height="110" />
@@ -246,7 +246,7 @@
           <mxGeometry as="geometry" y="144" width="400" height="78" />
         </mxCell>
         <mxCell id="dieta" value="Dieta" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="500" y="1768" width="400" height="324" />
+          <mxGeometry as="geometry" x="500" y="1751" width="400" height="324" />
         </mxCell>
         <mxCell id="dieta-a" value="- idDieta: INT (PK)&lt;br&gt;- nombre: VARCHAR&lt;br&gt;- objetivo: VARCHAR [0..1]&lt;br&gt;- descripcion: VARCHAR [0..1]&lt;br&gt;- visibilidad: Visibilidad&lt;br&gt;- /kcalTotales: DECIMAL&lt;br&gt;- /proteinasTotales: DECIMAL&lt;br&gt;- /carbohidratosTotales: DECIMAL&lt;br&gt;- /grasasTotales: DECIMAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="dieta">
           <mxGeometry as="geometry" y="26" width="400" height="161" />
@@ -258,7 +258,7 @@
           <mxGeometry as="geometry" y="195" width="400" height="129" />
         </mxCell>
         <mxCell id="dietaalim" value="DietaAlimento" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="1768" width="400" height="120" />
+          <mxGeometry as="geometry" x="0" y="1751" width="400" height="120" />
         </mxCell>
         <mxCell id="dietaalim-a" value="- cantidadGramos: DECIMAL&lt;br&gt;- comida: TipoComida" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="dietaalim">
           <mxGeometry as="geometry" y="26" width="400" height="42" />
@@ -270,7 +270,7 @@
           <mxGeometry as="geometry" y="76" width="400" height="44" />
         </mxCell>
         <mxCell id="alimento" value="Alimento" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="2242" width="400" height="324" />
+          <mxGeometry as="geometry" x="0" y="2225" width="400" height="324" />
         </mxCell>
         <mxCell id="alimento-a" value="- idAlimento: INT (PK)&lt;br&gt;- codigoBarras: VARCHAR [0..1]&lt;br&gt;- nombre: VARCHAR&lt;br&gt;- categoria: VARCHAR [0..1]&lt;br&gt;- porcionGramos: DECIMAL (porción típica)&lt;br&gt;- porcionNombre: VARCHAR [0..1]&lt;br&gt;- imagenUrl: VARCHAR [0..1]&lt;br&gt;- kcal: DECIMAL (por 100 g)&lt;br&gt;- proteinas: DECIMAL (por 100 g)&lt;br&gt;- carbohidratos: DECIMAL (por 100 g)&lt;br&gt;- grasas: DECIMAL (por 100 g)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="alimento">
           <mxGeometry as="geometry" y="26" width="400" height="195" />
@@ -282,7 +282,7 @@
           <mxGeometry as="geometry" y="229" width="400" height="95" />
         </mxCell>
         <mxCell id="asigdieta" value="AsignacionDieta" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1000" y="1768" width="400" height="239" />
+          <mxGeometry as="geometry" x="1000" y="1751" width="400" height="239" />
         </mxCell>
         <mxCell id="asigdieta-a" value="- idAsignacion: INT (PK)&lt;br&gt;- fechaAsignacion: DATE&lt;br&gt;- fechaInicio: DATE&lt;br&gt;- fechaFin: DATE&lt;br&gt;- estado: EstadoAsignacion" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="asigdieta">
           <mxGeometry as="geometry" y="26" width="400" height="93" />
@@ -294,7 +294,7 @@
           <mxGeometry as="geometry" y="127" width="400" height="112" />
         </mxCell>
         <mxCell id="regcomida" value="RegistroComida" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1000" y="2242" width="400" height="137" />
+          <mxGeometry as="geometry" x="1000" y="2225" width="400" height="137" />
         </mxCell>
         <mxCell id="regcomida-a" value="- idRegistro: INT (PK)&lt;br&gt;- fecha: DATE&lt;br&gt;- comida: TipoComida&lt;br&gt;- cantidadGramos: DECIMAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="regcomida">
           <mxGeometry as="geometry" y="26" width="400" height="76" />
@@ -306,7 +306,7 @@
           <mxGeometry as="geometry" y="110" width="400" height="27" />
         </mxCell>
         <mxCell id="meta" value="MetaNutricional" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1500" y="2242" width="400" height="137" />
+          <mxGeometry as="geometry" x="1500" y="2225" width="400" height="137" />
         </mxCell>
         <mxCell id="meta-a" value="- kcal: INT&lt;br&gt;- proteinas: INT (g)&lt;br&gt;- carbohidratos: INT (g)&lt;br&gt;- grasas: INT (g)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="meta">
           <mxGeometry as="geometry" y="26" width="400" height="76" />
@@ -318,7 +318,7 @@
           <mxGeometry as="geometry" y="110" width="400" height="27" />
         </mxCell>
         <mxCell id="asigrutina" value="AsignacionRutina" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2000" y="1768" width="400" height="222" />
+          <mxGeometry as="geometry" x="2000" y="1751" width="400" height="222" />
         </mxCell>
         <mxCell id="asigrutina-a" value="- idAsignacion: INT (PK)&lt;br&gt;- fechaAsignacion: DATE&lt;br&gt;- fechaInicio: DATE&lt;br&gt;- fechaFin: DATE&lt;br&gt;- estado: EstadoAsignacion" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="asigrutina">
           <mxGeometry as="geometry" y="26" width="400" height="93" />
@@ -330,7 +330,7 @@
           <mxGeometry as="geometry" y="127" width="400" height="95" />
         </mxCell>
         <mxCell id="rutina" value="Rutina" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="2500" y="1768" width="400" height="290" />
+          <mxGeometry as="geometry" x="2500" y="1751" width="400" height="290" />
         </mxCell>
         <mxCell id="rutina-a" value="- idRutina: INT (PK)&lt;br&gt;- nombre: VARCHAR&lt;br&gt;- objetivo: VARCHAR [0..1]&lt;br&gt;- descripcion: VARCHAR [0..1]&lt;br&gt;- nivel: NivelRutina [0..1]&lt;br&gt;- semanas: INT&lt;br&gt;- visibilidad: Visibilidad&lt;br&gt;- /diasPorSemana: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="rutina">
           <mxGeometry as="geometry" y="26" width="400" height="144" />
@@ -342,7 +342,7 @@
           <mxGeometry as="geometry" y="178" width="400" height="112" />
         </mxCell>
         <mxCell id="rutej" value="RutinaEjercicio" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="3000" y="1768" width="400" height="239" />
+          <mxGeometry as="geometry" x="3000" y="1751" width="400" height="239" />
         </mxCell>
         <mxCell id="rutej-a" value="- semana: INT&lt;br&gt;- dia: INT&lt;br&gt;- orden: INT&lt;br&gt;- series: INT&lt;br&gt;- tipoRepeticiones: TipoRepeticiones&lt;br&gt;- repeticionesMin: INT [0..1]&lt;br&gt;- repeticionesMax: INT [0..1]&lt;br&gt;- tipoEsfuerzo: TipoEsfuerzo&lt;br&gt;- valorEsfuerzo: INT [0..1]&lt;br&gt;- descansoSegundos: INT [0..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="rutej">
           <mxGeometry as="geometry" y="26" width="400" height="178" />
@@ -354,7 +354,7 @@
           <mxGeometry as="geometry" y="212" width="400" height="27" />
         </mxCell>
         <mxCell id="ejercicio" value="Ejercicio" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="3000" y="2242" width="400" height="239" />
+          <mxGeometry as="geometry" x="3000" y="2225" width="400" height="239" />
         </mxCell>
         <mxCell id="ejercicio-a" value="- idEjercicio: INT (PK)&lt;br&gt;- nombre: VARCHAR&lt;br&gt;- musculo: VARCHAR&lt;br&gt;- maquina: VARCHAR [0..1]&lt;br&gt;- imagenUrl: VARCHAR [0..1]&lt;br&gt;- descripcion: VARCHAR [0..1]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="ejercicio">
           <mxGeometry as="geometry" y="26" width="400" height="110" />
@@ -366,106 +366,106 @@
           <mxGeometry as="geometry" y="144" width="400" height="95" />
         </mxCell>
         <mxCell id="enum-title" value="&lt;b style=&quot;font-size:16px&quot;&gt;Enumeraciones&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="2706" width="300" height="30" />
+          <mxGeometry as="geometry" x="0" y="2689" width="300" height="30" />
         </mxCell>
         <mxCell id="enum-Sexo" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;Sexo" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="2756" width="220" height="101" />
+          <mxGeometry as="geometry" x="0" y="2739" width="220" height="101" />
         </mxCell>
         <mxCell id="enum-Sexo-v" value="MASCULINO&lt;br&gt;FEMENINO&lt;br&gt;OTRO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-Sexo">
           <mxGeometry as="geometry" y="40" width="220" height="61" />
         </mxCell>
         <mxCell id="enum-RolUsuario" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;RolUsuario" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="260" y="2756" width="220" height="152" />
+          <mxGeometry as="geometry" x="260" y="2739" width="220" height="152" />
         </mxCell>
         <mxCell id="enum-RolUsuario-v" value="CLIENTE&lt;br&gt;ENTRENADOR&lt;br&gt;NUTRICIONISTA&lt;br&gt;FISIOTERAPEUTA&lt;br&gt;RECEPCIONISTA&lt;br&gt;ADMINISTRADOR" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-RolUsuario">
           <mxGeometry as="geometry" y="40" width="220" height="112" />
         </mxCell>
         <mxCell id="enum-DiaSemana" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;DiaSemana" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="520" y="2756" width="220" height="169" />
+          <mxGeometry as="geometry" x="520" y="2739" width="220" height="169" />
         </mxCell>
         <mxCell id="enum-DiaSemana-v" value="LUNES&lt;br&gt;MARTES&lt;br&gt;MIERCOLES&lt;br&gt;JUEVES&lt;br&gt;VIERNES&lt;br&gt;SABADO&lt;br&gt;DOMINGO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-DiaSemana">
           <mxGeometry as="geometry" y="40" width="220" height="129" />
         </mxCell>
         <mxCell id="enum-TipoMembresia" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;TipoMembresia" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="780" y="2756" width="220" height="67" />
+          <mxGeometry as="geometry" x="780" y="2739" width="220" height="67" />
         </mxCell>
         <mxCell id="enum-TipoMembresia-v" value="PREMIUM" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-TipoMembresia">
           <mxGeometry as="geometry" y="40" width="220" height="27" />
         </mxCell>
         <mxCell id="enum-DuracionMembresia" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;DuracionMembresia" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1040" y="2756" width="220" height="84" />
+          <mxGeometry as="geometry" x="1040" y="2739" width="220" height="84" />
         </mxCell>
         <mxCell id="enum-DuracionMembresia-v" value="MENSUAL&lt;br&gt;ANUAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-DuracionMembresia">
           <mxGeometry as="geometry" y="40" width="220" height="44" />
         </mxCell>
         <mxCell id="enum-EstadoSuscripcion" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;EstadoSuscripcion" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1300" y="2756" width="220" height="101" />
+          <mxGeometry as="geometry" x="1300" y="2739" width="220" height="101" />
         </mxCell>
         <mxCell id="enum-EstadoSuscripcion-v" value="ACTIVA&lt;br&gt;VENCIDA&lt;br&gt;CANCELADA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-EstadoSuscripcion">
           <mxGeometry as="geometry" y="40" width="220" height="61" />
         </mxCell>
         <mxCell id="enum-MetodoPago" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;MetodoPago" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1560" y="2756" width="220" height="118" />
+          <mxGeometry as="geometry" x="1560" y="2739" width="220" height="118" />
         </mxCell>
         <mxCell id="enum-MetodoPago-v" value="EFECTIVO&lt;br&gt;TARJETA&lt;br&gt;TRANSFERENCIA&lt;br&gt;PSE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-MetodoPago">
           <mxGeometry as="geometry" y="40" width="220" height="78" />
         </mxCell>
         <mxCell id="enum-EstadoPago" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;EstadoPago" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="2965" width="220" height="118" />
+          <mxGeometry as="geometry" x="0" y="2948" width="220" height="118" />
         </mxCell>
         <mxCell id="enum-EstadoPago-v" value="PENDIENTE&lt;br&gt;APROBADO&lt;br&gt;RECHAZADO&lt;br&gt;REEMBOLSADO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-EstadoPago">
           <mxGeometry as="geometry" y="40" width="220" height="78" />
         </mxCell>
         <mxCell id="enum-EstadoFactura" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;EstadoFactura" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="260" y="2965" width="220" height="84" />
+          <mxGeometry as="geometry" x="260" y="2948" width="220" height="84" />
         </mxCell>
         <mxCell id="enum-EstadoFactura-v" value="EMITIDA&lt;br&gt;ANULADA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-EstadoFactura">
           <mxGeometry as="geometry" y="40" width="220" height="44" />
         </mxCell>
         <mxCell id="enum-EstadoAsignacion" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;EstadoAsignacion" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="520" y="2965" width="220" height="118" />
+          <mxGeometry as="geometry" x="520" y="2948" width="220" height="118" />
         </mxCell>
         <mxCell id="enum-EstadoAsignacion-v" value="ACTIVA&lt;br&gt;PAUSADA&lt;br&gt;FINALIZADA&lt;br&gt;CANCELADA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-EstadoAsignacion">
           <mxGeometry as="geometry" y="40" width="220" height="78" />
         </mxCell>
         <mxCell id="enum-TipoComida" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;TipoComida" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="780" y="2965" width="220" height="101" />
+          <mxGeometry as="geometry" x="780" y="2948" width="220" height="101" />
         </mxCell>
         <mxCell id="enum-TipoComida-v" value="DESAYUNO&lt;br&gt;ALMUERZO&lt;br&gt;CENA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-TipoComida">
           <mxGeometry as="geometry" y="40" width="220" height="61" />
         </mxCell>
         <mxCell id="enum-EstadoCita" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;EstadoCita" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1040" y="2965" width="220" height="118" />
+          <mxGeometry as="geometry" x="1040" y="2948" width="220" height="118" />
         </mxCell>
         <mxCell id="enum-EstadoCita-v" value="PENDIENTE&lt;br&gt;CONFIRMADA&lt;br&gt;CANCELADA&lt;br&gt;COMPLETADA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-EstadoCita">
           <mxGeometry as="geometry" y="40" width="220" height="78" />
         </mxCell>
         <mxCell id="enum-Visibilidad" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;Visibilidad" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1300" y="2965" width="220" height="84" />
+          <mxGeometry as="geometry" x="1300" y="2948" width="220" height="84" />
         </mxCell>
         <mxCell id="enum-Visibilidad-v" value="PRIVADA&lt;br&gt;PUBLICA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-Visibilidad">
           <mxGeometry as="geometry" y="40" width="220" height="44" />
         </mxCell>
         <mxCell id="enum-NivelRutina" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;NivelRutina" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1560" y="2965" width="220" height="101" />
+          <mxGeometry as="geometry" x="1560" y="2948" width="220" height="101" />
         </mxCell>
         <mxCell id="enum-NivelRutina-v" value="PRINCIPIANTE&lt;br&gt;INTERMEDIO&lt;br&gt;AVANZADO" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-NivelRutina">
           <mxGeometry as="geometry" y="40" width="220" height="61" />
         </mxCell>
         <mxCell id="enum-TipoRepeticiones" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;TipoRepeticiones" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="0" y="3123" width="220" height="101" />
+          <mxGeometry as="geometry" x="0" y="3106" width="220" height="101" />
         </mxCell>
         <mxCell id="enum-TipoRepeticiones-v" value="MAXIMAS&lt;br&gt;RANGO&lt;br&gt;AMRAP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-TipoRepeticiones">
           <mxGeometry as="geometry" y="40" width="220" height="61" />
         </mxCell>
         <mxCell id="enum-TipoEsfuerzo" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;TipoEsfuerzo" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="260" y="3123" width="220" height="84" />
+          <mxGeometry as="geometry" x="260" y="3106" width="220" height="84" />
         </mxCell>
         <mxCell id="enum-TipoEsfuerzo-v" value="RIR&lt;br&gt;ARM" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-TipoEsfuerzo">
           <mxGeometry as="geometry" y="40" width="220" height="44" />
         </mxCell>
         <mxCell id="enum-ParteCuerpo" value="&lt;i&gt;«enumeration»&lt;/i&gt;&lt;br&gt;ParteCuerpo" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="520" y="3123" width="220" height="186" />
+          <mxGeometry as="geometry" x="520" y="3106" width="220" height="186" />
         </mxCell>
         <mxCell id="enum-ParteCuerpo-v" value="CUELLO&lt;br&gt;HOMBROS&lt;br&gt;PECHO&lt;br&gt;BRAZO&lt;br&gt;CINTURA&lt;br&gt;CADERA&lt;br&gt;MUSLO&lt;br&gt;PANTORRILLA" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=nowrap;html=1;" vertex="1" parent="enum-ParteCuerpo">
           <mxGeometry as="geometry" y="40" width="220" height="146" />
@@ -479,47 +479,47 @@
         <mxCell id="e1" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.5000;exitY=0.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=1.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="usuario">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1700" y="532" />
-              <mxPoint x="1700" y="532" />
+              <mxPoint x="1700" y="515" />
+              <mxPoint x="1700" y="515" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e2" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.5000;exitY=0.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=1.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="admin" target="usuario">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="2200" y="532" />
-              <mxPoint x="1700" y="532" />
+              <mxPoint x="2200" y="515" />
+              <mxPoint x="1700" y="515" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e3" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.5000;exitY=0.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=1.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="profesional" target="usuario">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="2700" y="532" />
-              <mxPoint x="1700" y="532" />
+              <mxPoint x="2700" y="515" />
+              <mxPoint x="1700" y="515" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e4" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.5000;exitY=0.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=1.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="nutricionista" target="profesional">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="700" y="1312" />
-              <mxPoint x="2700" y="1312" />
+              <mxPoint x="700" y="1295" />
+              <mxPoint x="2700" y="1295" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e5" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.5000;exitY=0.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=1.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="fisio" target="profesional">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="2700" y="1312" />
-              <mxPoint x="2700" y="1312" />
+              <mxPoint x="2700" y="1295" />
+              <mxPoint x="2700" y="1295" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e6" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.0000;exitY=0.3958;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.5033;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="entrenador" target="profesional">
+        <mxCell id="e6" value="" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=block;endFill=0;endSize=16;exitX=0.0000;exitY=0.3906;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.4967;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="entrenador" target="profesional">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="e7" value="pertenece" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.5000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.2984;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="sede" target="usuario">
+        <mxCell id="e7" value="pertenece" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.5000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.3127;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="sede" target="usuario">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e7-s" value="0..1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e7">
@@ -532,7 +532,7 @@
             <mxPoint x="-4" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e8" value="remitente" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.1344;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.3247;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="usuario" target="mensaje">
+        <mxCell id="e8" value="remitente" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.1408;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.3247;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="usuario" target="mensaje">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e8-s" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e8">
@@ -545,7 +545,7 @@
             <mxPoint x="-4" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e9" value="destinatario" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.3226;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.7792;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="usuario" target="mensaje">
+        <mxCell id="e9" value="destinatario" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.3380;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.7792;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="usuario" target="mensaje">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e9-s" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e9">
@@ -628,7 +628,7 @@
             <mxPoint x="4" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e15" value="atiende" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.0000;exitY=0.5029;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.3438;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="fisio" target="cita">
+        <mxCell id="e15" value="atiende" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.0000;exitY=0.4971;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.3398;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="fisio" target="cita">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e15-s" value="1" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e15">
@@ -641,7 +641,7 @@
             <mxPoint x="4" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e16" value="define" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=1.0000;exitY=0.3886;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.4964;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="fisio" target="disponibilidad">
+        <mxCell id="e16" value="define" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=1.0000;exitY=0.3943;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.5036;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="fisio" target="disponibilidad">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e16-s" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e16">
@@ -670,8 +670,8 @@
         <mxCell id="e18" value="registra" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=0.0000;exitY=0.8095;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.1674;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="progfis">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1415" y="1092" />
-              <mxPoint x="1415" y="1402" />
+              <mxPoint x="1415" y="1075" />
+              <mxPoint x="1415" y="1385" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -688,8 +688,8 @@
         <mxCell id="e19" value="recibe" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.0000;exitY=0.8571;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.1674;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="asigdieta">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1435" y="1122" />
-              <mxPoint x="1435" y="1808" />
+              <mxPoint x="1435" y="1105" />
+              <mxPoint x="1435" y="1791" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -706,8 +706,8 @@
         <mxCell id="e20" value="registra" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=0.0000;exitY=0.9048;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.2920;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="regcomida">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1455" y="1152" />
-              <mxPoint x="1455" y="2282" />
+              <mxPoint x="1455" y="1135" />
+              <mxPoint x="1455" y="2265" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -724,8 +724,8 @@
         <mxCell id="e21" value="registra" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=0.0000;exitY=0.9524;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.2597;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="medida">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1480" y="1182" />
-              <mxPoint x="1480" y="1808" />
+              <mxPoint x="1480" y="1165" />
+              <mxPoint x="1480" y="1791" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -742,8 +742,8 @@
         <mxCell id="e22" value="solicita" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.8095;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.1562;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="cita">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1985" y="1092" />
-              <mxPoint x="1985" y="1402" />
+              <mxPoint x="1985" y="1075" />
+              <mxPoint x="1985" y="1385" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -760,8 +760,8 @@
         <mxCell id="e23" value="recibe" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.8571;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.1802;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="asigrutina">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1965" y="1122" />
-              <mxPoint x="1965" y="1808" />
+              <mxPoint x="1965" y="1105" />
+              <mxPoint x="1965" y="1791" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -778,8 +778,8 @@
         <mxCell id="e24" value="registra" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=1.0000;exitY=0.9048;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.1802;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="progej">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1945" y="1152" />
-              <mxPoint x="1945" y="2282" />
+              <mxPoint x="1945" y="1135" />
+              <mxPoint x="1945" y="2265" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -796,8 +796,8 @@
         <mxCell id="e25" value="tiene" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=1.0000;exitY=0.9524;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.2920;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="cliente" target="meta">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="1920" y="1182" />
-              <mxPoint x="1920" y="2282" />
+              <mxPoint x="1920" y="1165" />
+              <mxPoint x="1920" y="2265" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -814,8 +814,8 @@
         <mxCell id="e26" value="asigna" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.8750;exitY=1.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=0.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="nutricionista" target="asigdieta">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="850" y="1728" />
-              <mxPoint x="1200" y="1728" />
+              <mxPoint x="850" y="1711" />
+              <mxPoint x="1200" y="1711" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -829,7 +829,7 @@
             <mxPoint x="6" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e27" value="se asigna en" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.3704;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.5021;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="dieta" target="asigdieta">
+        <mxCell id="e27" value="se asigna en" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.3673;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.4979;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="dieta" target="asigdieta">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e27-s" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e27">
@@ -868,7 +868,7 @@
             <mxPoint x="6" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e30" value="usa" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.0000;exitY=0.4964;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.2099;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="regcomida" target="alimento">
+        <mxCell id="e30" value="usa" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.0000;exitY=0.5036;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.2130;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="regcomida" target="alimento">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e30-s" value="*" style="edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e30">
@@ -884,9 +884,9 @@
         <mxCell id="e31" value="asigna" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=1.0000;exitY=0.2083;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5000;entryY=0.0000;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="entrenador" target="asigrutina">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="3480" y="622" />
-              <mxPoint x="3480" y="1728" />
-              <mxPoint x="2200" y="1728" />
+              <mxPoint x="3480" y="605" />
+              <mxPoint x="3480" y="1711" />
+              <mxPoint x="2200" y="1711" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -913,7 +913,7 @@
             <mxPoint x="4" y="-2" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e33" value="contiene" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=1.0000;exitY=0.4138;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.5021;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="rutina" target="rutej">
+        <mxCell id="e33" value="contiene" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;startArrow=diamondThin;startFill=1;startSize=16;endArrow=none;exitX=1.0000;exitY=0.4103;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.4979;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="rutina" target="rutej">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
         <mxCell id="e33-s" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;fontSize=13;fontStyle=1;labelBackgroundColor=none;" vertex="1" connectable="0" parent="e33">
@@ -970,8 +970,8 @@
             <Array as="points">
               <mxPoint x="1840" y="25" />
               <mxPoint x="3450" y="25" />
-              <mxPoint x="3450" y="1693" />
-              <mxPoint x="2820" y="1693" />
+              <mxPoint x="3450" y="1676" />
+              <mxPoint x="2820" y="1676" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -990,8 +990,8 @@
             <Array as="points">
               <mxPoint x="1560" y="25" />
               <mxPoint x="-50" y="25" />
-              <mxPoint x="-50" y="1693" />
-              <mxPoint x="580" y="1693" />
+              <mxPoint x="-50" y="1676" />
+              <mxPoint x="580" y="1676" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -1008,9 +1008,9 @@
         <mxCell id="e39" value="copia de" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.8500;exitY=1.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1.0000;entryY=0.9310;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="rutina" target="rutina">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="2840" y="2098" />
-              <mxPoint x="2945" y="2098" />
-              <mxPoint x="2945" y="2038" />
+              <mxPoint x="2840" y="2081" />
+              <mxPoint x="2945" y="2081" />
+              <mxPoint x="2945" y="2021" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -1027,9 +1027,9 @@
         <mxCell id="e40" value="copia de" style="html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=2;labelBackgroundColor=#ffffff;endArrow=none;exitX=0.1500;exitY=1.0000;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.0000;entryY=0.9383;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="dieta" target="dieta">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="560" y="2132" />
-              <mxPoint x="455" y="2132" />
-              <mxPoint x="455" y="2072" />
+              <mxPoint x="560" y="2115" />
+              <mxPoint x="455" y="2115" />
+              <mxPoint x="455" y="2055" />
             </Array>
           </mxGeometry>
         </mxCell>

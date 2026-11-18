@@ -1,0 +1,28 @@
+{% extends "panel/base_seccion.html" %}
+
+{% block columnas %}
+    <th>Sede</th>
+    <th>Dirección</th>
+    <th>Teléfono</th>
+    <th>Correo</th>
+    <th class="numero">Capacidad</th>
+    <th class="numero">Usuarios</th>
+    <th>Estado</th>
+{% endblock %}
+
+{% block filas %}
+    {% for s in pagina %}
+        <tr{% if not s.activa %} class="fila-inactiva"{% endif %}>
+            <td><strong>{{ s.nombre }}</strong><small>{{ s.ciudad }}</small></td>
+            <td>{{ s.direccion }}</td>
+            <td>{{ s.telefono }}</td>
+            <td>{{ s.correo|default:"—" }}</td>
+            <td class="numero">{{ s.capacidad|default:"—" }}</td>
+            <td class="numero">{{ s.num_usuarios }}</td>
+            <td><span class="etiqueta-estado {% if s.activa %}activo{% else %}inactivo{% endif %}">{% if s.activa %}Activa{% else %}Inactiva{% endif %}</span></td>
+            {% include "panel/_acciones.html" with id=s.pk activo=s.activa nombre=s.nombre %}
+        </tr>
+    {% empty %}
+        <tr><td colspan="8" class="sin-resultados"><i class="fa-solid fa-building"></i>No hay sedes con esos filtros.</td></tr>
+    {% endfor %}
+{% endblock %}

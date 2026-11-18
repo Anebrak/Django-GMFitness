@@ -1,0 +1,30 @@
+from django import template
+
+register = template.Library()
+
+
+@register.filter
+def pesos(valor):
+    """89000 -> '$89.000' (pesos colombianos, sin decimales)."""
+    try:
+        numero = round(float(valor))
+    except (TypeError, ValueError):
+        return valor
+    return "$" + f"{numero:,}".replace(",", ".")
+
+
+@register.filter
+def iniciales(usuario):
+    """Usuario -> 'DM' (primera letra del nombre y del apellido)."""
+    nombre = (usuario.first_name or "").strip()
+    apellido = (usuario.last_name or "").strip()
+    return ((nombre[:1] + apellido[:1]) or usuario.email[:1]).upper()
+
+
+@register.filter
+def dato(diccionario, clave):
+    """{{ valores|dato:"email" }} -> valores["email"] (vacío si no existe)."""
+    try:
+        return diccionario.get(clave, "")
+    except AttributeError:
+        return ""

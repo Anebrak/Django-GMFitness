@@ -1,0 +1,40 @@
+{# Botones de una fila. Uso: {% include "panel/_acciones.html" with id=x.pk activo=x.activa nombre=x.nombre usuario=False %} #}
+<td class="col-acciones">
+    <div class="acciones">
+        <button type="button" class="btn-icono btn-editar" data-editar="{{ id }}" aria-label="Editar {{ nombre }}" title="Editar">
+            <i class="fa-solid fa-pen"></i>
+        </button>
+        {% if usuario %}
+            <button type="button" class="btn-icono btn-clave" title="Nueva contraseña temporal"
+                    aria-label="Nueva contraseña temporal para {{ nombre }}"
+                    data-confirmar data-url="{% url 'panel_nueva_clave' id %}"
+                    data-titulo="¿Nueva contraseña temporal?"
+                    data-texto="{{ nombre }} ya no podrá entrar con su contraseña actual. Se mostrará la nueva una sola vez."
+                    data-boton="Generar contraseña">
+                <i class="fa-solid fa-key"></i>
+            </button>
+        {% endif %}
+        {% if activo %}
+            {# Nadie puede desactivar su propia cuenta #}
+            {% if not usuario or id != user.pk %}
+                <button type="button" class="btn-icono btn-eliminar" title="Desactivar"
+                        aria-label="Desactivar {{ nombre }}"
+                        data-confirmar data-peligro data-url="{% url 'panel_estado' seccion id %}"
+                        data-titulo="¿Desactivar {{ nombre }}?"
+                        data-texto="{% if usuario %}No podrá ingresar, pero se conserva todo su historial.{% else %}Dejará de mostrarse y de ofrecerse, pero no se borra.{% endif %} Puedes volver a activarlo cuando quieras."
+                        data-boton="Desactivar">
+                    <i class="fa-solid fa-ban"></i>
+                </button>
+            {% endif %}
+        {% else %}
+            <form method="post" action="{% url 'panel_estado' seccion id %}" class="form-activar">
+                {% csrf_token %}
+                <input type="hidden" name="activar" value="1">
+                <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+                <button type="submit" class="btn-icono btn-activar" title="Activar" aria-label="Activar {{ nombre }}">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</td>

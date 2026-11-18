@@ -10,10 +10,10 @@ from .models import (
 )
 
 # Busqueda reutilizable para los modelos que cuelgan de un Usuario
-BUSCAR_USUARIO = ["usuario__first_name", "usuario__last_name", "usuario__email", "usuario__numero_identidad"]
+BUSCAR_USUARIO = ["usuario__first_name", "usuario__last_name", "usuario__email"]
 BUSCAR_CLIENTE = [
     "cliente__usuario__first_name", "cliente__usuario__last_name",
-    "cliente__usuario__email", "cliente__usuario__numero_identidad",
+    "cliente__usuario__email",
 ]
 
 
@@ -24,7 +24,7 @@ BUSCAR_CLIENTE = [
 class UsuarioCreationForm(BaseUserCreationForm):
     class Meta:
         model = Usuario
-        fields = ("email", "numero_identidad", "first_name", "last_name", "rol")
+        fields = ("email", "first_name", "last_name", "rol")
 
 
 class UsuarioChangeForm(UserChangeForm):
@@ -39,15 +39,15 @@ class UsuarioAdmin(UserAdmin):
     form = UsuarioChangeForm
     model = Usuario
 
-    list_display = ["email", "first_name", "last_name", "numero_identidad", "rol", "sede", "is_active"]
+    list_display = ["email", "first_name", "last_name", "rol", "sede", "is_active"]
     list_filter = ["rol", "sede", "is_active", "is_staff"]
-    search_fields = ["email", "first_name", "last_name", "numero_identidad", "telefono"]
+    search_fields = ["email", "first_name", "last_name", "telefono"]
     ordering = ["email"]
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Datos personales", {"fields": (
-            "first_name", "last_name", "numero_identidad", "fecha_nacimiento", "telefono",
+            "first_name", "last_name", "fecha_nacimiento", "telefono",
         )}),
         ("Gimnasio", {"fields": ("rol", "sede")}),
         ("Permisos", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
@@ -57,7 +57,7 @@ class UsuarioAdmin(UserAdmin):
         (None, {
             "classes": ("wide",),
             "fields": (
-                "email", "numero_identidad", "first_name", "last_name", "rol",
+                "email", "first_name", "last_name", "rol",
                 "password1", "password2",
             ),
         }),
@@ -271,8 +271,8 @@ class ProgresoEjercicioAdmin(admin.ModelAdmin):
 
 @admin.register(Ejercicio)
 class EjercicioAdmin(admin.ModelAdmin):
-    list_display = ["nombre", "musculo", "maquina"]
-    list_filter = ["musculo"]
+    list_display = ["nombre", "musculo", "maquina", "activo"]
+    list_filter = ["activo", "musculo"]
     search_fields = ["nombre", "musculo", "maquina"]
 
 
@@ -311,8 +311,8 @@ class AsignacionRutinaAdmin(admin.ModelAdmin):
 
 @admin.register(Alimento)
 class AlimentoAdmin(admin.ModelAdmin):
-    list_display = ["nombre", "categoria", "kcal", "proteinas", "carbohidratos", "grasas", "porcion_gramos", "porcion_nombre"]
-    list_filter = ["categoria"]
+    list_display = ["nombre", "categoria", "activo", "kcal", "proteinas", "carbohidratos", "grasas", "porcion_gramos", "porcion_nombre"]
+    list_filter = ["activo", "categoria"]
     search_fields = ["nombre", "categoria", "codigo_barras"]
 
 

@@ -1,0 +1,41 @@
+{% extends "panel/base_seccion.html" %}
+
+{% block filtros %}
+    <select name="musculo" class="filtro" aria-label="Grupo muscular">
+        {% for valor, texto in opciones_musculo %}
+            <option value="{{ valor }}"{% if valor == musculo %} selected{% endif %}>{{ texto }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block columnas %}
+    <th>Ejercicio</th>
+    <th>Grupo muscular</th>
+    <th>Máquina / equipo</th>
+    <th>Descripción</th>
+    <th>Estado</th>
+{% endblock %}
+
+{% block filas %}
+    {% for e in pagina %}
+        <tr{% if not e.activo %} class="fila-inactiva"{% endif %}>
+            <td>
+                <div class="celda-persona">
+                    {% if e.imagen_url %}
+                        <img class="miniatura" src="{{ e.imagen_url }}" alt="" loading="lazy">
+                    {% else %}
+                        <span class="miniatura sin-imagen" aria-hidden="true"><i class="fa-solid fa-dumbbell"></i></span>
+                    {% endif %}
+                    <strong>{{ e.nombre }}</strong>
+                </div>
+            </td>
+            <td>{{ e.musculo }}</td>
+            <td>{{ e.maquina|default:"—" }}</td>
+            <td class="celda-texto">{{ e.descripcion|default:"—"|truncatechars:60 }}</td>
+            <td><span class="etiqueta-estado {% if e.activo %}activo{% else %}inactivo{% endif %}">{% if e.activo %}Activo{% else %}Inactivo{% endif %}</span></td>
+            {% include "panel/_acciones.html" with id=e.pk activo=e.activo nombre=e.nombre %}
+        </tr>
+    {% empty %}
+        <tr><td colspan="6" class="sin-resultados"><i class="fa-solid fa-dumbbell"></i>No hay ejercicios con esos filtros.</td></tr>
+    {% endfor %}
+{% endblock %}

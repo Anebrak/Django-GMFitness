@@ -1,0 +1,150 @@
+{% extends "panel/base_panel.html" %}
+{# Base de las secciones con tabla: herramientas, tabla, paginación y modales.  #}
+{# Cada sección llena los bloques: filtros, columnas, filas y (opcional) campos_extra. #}
+
+{% block titulo_panel %}{{ titulo }}{% endblock %}
+
+{% block panel %}
+    <div id="encabezado-modulo">
+        <div>
+            <h1 id="titulo-modulo">{{ titulo }}</h1>
+            <p class="descripcion-modulo">{{ descripcion }}</p>
+        </div>
+        <button type="button" id="btn-agregar" class="boton-primario">
+            <i class="fa-solid fa-plus"></i> Agregar {{ singular }}
+        </button>
+    </div>
+
+    <!-- ============ Búsqueda y filtros (GET) ============ -->
+    <form id="herramientas" method="get" role="search">
+        {% if marcador %}
+            <div id="caja-buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="search" id="buscar" name="q" value="{{ q }}" placeholder="{{ marcador }}" aria-label="Buscar">
+            </div>
+        {% endif %}
+        {% block filtros %}{% endblock %}
+        <select name="estado" class="filtro" aria-label="Estado">
+            {% for valor, texto in opciones_estado %}
+                <option value="{{ valor }}"{% if valor == estado %} selected{% endif %}>{{ texto }}</option>
+            {% endfor %}
+        </select>
+        {% if request.GET %}
+            <a class="enlace-limpiar" href="{{ request.path }}"><i class="fa-solid fa-xmark"></i> Limpiar</a>
+        {% endif %}
+    </form>
+
+    <!-- ============ Tabla ============ -->
+    <div id="tabla-contenedor">
+        <table id="tabla">
+            <thead>
+                <tr>{% block columnas %}{% endblock %}<th class="col-acciones">Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% block filas %}{% endblock %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============ Paginación ============ -->
+    <div id="pie-tabla">
+        <span id="info-registros">
+            {% if pagina.paginator.count %}
+                Mostrando {{ pagina.start_index }}–{{ pagina.end_index }} de {{ pagina.paginator.count }}
+            {% else %}
+                Sin registros
+            {% endif %}
+        </span>
+        {% if pagina.paginator.num_pages > 1 %}
+            <nav id="paginacion" aria-label="Páginas">
+                {% if pagina.has_previous %}
+                    <a class="btn-pagina" href="{% querystring pagina=pagina.previous_page_number %}" aria-label="Anterior"><i class="fa-solid fa-chevron-left"></i></a>
+                {% else %}
+                    <span class="btn-pagina deshabilitado"><i class="fa-solid fa-chevron-left"></i></span>
+                {% endif %}
+                {% for numero in pagina.paginator.get_elided_page_range %}
+                    {% if numero == pagina.number %}
+                        <span class="btn-pagina activo" aria-current="page">{{ numero }}</span>
+                    {% elif numero == pagina.paginator.ELLIPSIS %}
+                        <span class="btn-pagina deshabilitado">…</span>
+                    {% else %}
+                        <a class="btn-pagina" href="{% querystring pagina=numero %}">{{ numero }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if pagina.has_next %}
+                    <a class="btn-pagina" href="{% querystring pagina=pagina.next_page_number %}" aria-label="Siguiente"><i class="fa-solid fa-chevron-right"></i></a>
+                {% else %}
+                    <span class="btn-pagina deshabilitado"><i class="fa-solid fa-chevron-right"></i></span>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </div>
+
+    <!-- ============ Modal: agregar / editar ============ -->
+    <div class="modal-overlay{% if modal_abierto %} activo{% endif %}" id="modal-form" aria-hidden="{% if modal_abierto %}false{% else %}true{% endif %}">
+        <section class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="titulo-form">
+            <button class="modal-cerrar" type="button" data-cerrar-modal aria-label="Cerrar">&times;</button>
+            <h2 id="titulo-form" data-agregar="Agregar {{ singular }}" data-editar="Editar {{ singular }}">
+                {% if editando_id %}Editar{% else %}Agregar{% endif %} {{ singular }}
+            </h2>
+            <form id="formulario" method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="id" id="campo-id" value="{{ editando_id }}">
+                <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+                <div id="campos-form">
+                    {% for campo in campos %}
+                        {% include "panel/_campo_panel.html" %}
+                    {% endfor %}
+                </div>
+                <div class="modal-botones">
+                    <button type="button" class="boton-secundario" data-cerrar-modal>Cancelar</button>
+                    <button type="submit" class="boton-primario">Guardar</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- ============ Modal: confirmar (desactivar / nueva contraseña) ============ -->
+    <div class="modal-overlay" id="modal-confirmar" aria-hidden="true">
+        <section class="modal-caja modal-pequeno" role="alertdialog" aria-modal="true" aria-labelledby="titulo-confirmar">
+            <button class="modal-cerrar" type="button" data-cerrar-modal aria-label="Cerrar">&times;</button>
+            <i class="fa-solid fa-triangle-exclamation icono-alerta"></i>
+            <h2 id="titulo-confirmar">¿Estás seguro?</h2>
+            <p id="texto-confirmar"></p>
+            <form id="form-confirmar" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+                <div class="modal-botones">
+                    <button type="button" class="boton-secundario" data-cerrar-modal>Cancelar</button>
+                    <button type="submit" class="boton-primario" id="btn-confirmar">Confirmar</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- ============ Modal: contraseña temporal (se muestra una sola vez) ============ -->
+    {% if clave_temporal %}
+        <div class="modal-overlay activo" id="modal-clave" aria-hidden="false">
+            <section class="modal-caja modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="titulo-clave">
+                <button class="modal-cerrar" type="button" data-cerrar-modal aria-label="Cerrar">&times;</button>
+                <i class="fa-solid fa-key icono-alerta"></i>
+                <h2 id="titulo-clave">Contraseña temporal</h2>
+                <p>Entrégasela a <strong>{{ clave_temporal.nombre }}</strong> ({{ clave_temporal.email }}).
+                    <br>Solo se muestra esta vez.</p>
+                <div id="caja-clave">
+                    <code id="texto-clave">{{ clave_temporal.clave }}</code>
+                    <button type="button" class="btn-icono" id="btn-copiar-clave" aria-label="Copiar contraseña" title="Copiar">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+                <div class="modal-botones">
+                    <button type="button" class="boton-primario" data-cerrar-modal>Listo</button>
+                </div>
+            </section>
+        </div>
+    {% endif %}
+
+    {# Datos de la página actual para llenar el formulario al editar (lo usa panel.js) #}
+    {{ registros_json|json_script:"datos-registros" }}
+    {% block datos_extra %}{% endblock %}
+{% endblock %}

@@ -77,6 +77,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Debe estar definido antes de la primera migracion.
 AUTH_USER_MODEL = 'gmf.Usuario'
 
+# Login: a dónde ir para ingresar y a dónde volver después de entrar o salir
+LOGIN_URL = 'ingresar'
+LOGIN_REDIRECT_URL = 'inicio'
+LOGOUT_REDIRECT_URL = 'inicio'
+
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
