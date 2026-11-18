@@ -19,3 +19,12 @@ def iniciales(usuario):
     nombre = (usuario.first_name or "").strip()
     apellido = (usuario.last_name or "").strip()
     return ((nombre[:1] + apellido[:1]) or usuario.email[:1]).upper()
+
+
+@register.filter
+def dato(diccionario, clave):
+    """{{ valores|dato:"email" }} -> valores["email"] (vacío si no existe)."""
+    try:
+        return diccionario.get(clave, "")
+    except AttributeError:
+        return ""

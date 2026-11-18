@@ -23,6 +23,11 @@
 
             <div id="acciones-cuenta">
                 {% if user.is_authenticated %}
+                    {% if user.rol == "ADMINISTRADOR" %}
+                        <a class="boton-secundario" id="btn-ir-panel" href="{% url 'panel' %}">
+                            <i class="fa-solid fa-gauge"></i><span class="texto-boton"> Panel</span>
+                        </a>
+                    {% endif %}
                     <div id="saludo-usuario">
                         <span class="usuario-bola" aria-hidden="true">{{ user|iniciales }}</span>
                         <span>{{ user.first_name|default:user.email }}</span>

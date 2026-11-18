@@ -58,9 +58,11 @@ def ingresar(request):
         if usuario is not None:
             login(request, usuario)
             messages.success(request, f"¡Hola de nuevo, {usuario.first_name}!")
-            # Sin ?next=, el administrador va directo a su panel
+            # Sin ?next=, el administrador va directo a su panel y el entrenador al suyo
             if not siguiente and usuario.rol == RolUsuario.ADMINISTRADOR:
                 return redirect("panel")
+            if not siguiente and usuario.rol == RolUsuario.ENTRENADOR:
+                return redirect("entrenador_resumen")
             return redirect(siguiente or "inicio")
 
         messages.error(request, "El correo o la contraseña no son correctos.")

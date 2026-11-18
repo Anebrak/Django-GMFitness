@@ -76,6 +76,24 @@ modelo, se actualizan juntos el diagrama, `models.py`, `admin.py` y las migracio
   sugerida (con `porcion_nombre`, ej. "1 unidad") y el usuario escribe los gramos que comió.
   Tienen `categoria` (texto libre) e `imagen_url`. Ejercicio tiene `maquina` e `imagen_url`.
   Las imágenes se guardan como URL (no se suben archivos).
+- **Rutinas (migración 0005):** `Rutina.estado` BORRADOR/PUBLICADA (solo las publicadas se
+  asignan; **los entrenadores no "inician" rutinas**: el progreso "semana N de M" es de la
+  `AsignacionRutina`). `Rutina.dias_por_semana` es campo (1-7). `DiaRutina` (rutina, semana, día,
+  nombre) permite días vacíos y con nombre. `SerieRutina` guarda reps, carga (kg) y descanso
+  **por serie**; `RutinaEjercicio` conserva series/reps/descanso de la primera serie como resumen.
+  Máximo 24 semanas. Esfuerzo: RIR 0-10 o ARM (sin lb, %1RM ni RPE).
+- **Ejercicios personalizados:** `Ejercicio.autor` (vacío = catálogo del gimnasio; con autor solo
+  lo ve quien lo creó), `tipo_objetivo` REPS/TIEMPO, `video_url` (YouTube); el equipo (`maquina`)
+  sale de la lista `EQUIPOS` y `musculo` guarda uno o varios de `GRUPOS_MUSCULARES` separados por
+  coma. El número de usos se calcula (`Count("rutinaejercicio")`).
+- **Asignar rutina:** `AsignacionRutina.semana_inicio` y `nota`. Asignar otra rutina **reemplaza**
+  la activa (la anterior queda CANCELADA); el historial de cargas y peso se conserva.
+  `fecha_fin = fecha_inicio + semanas restantes`. Opcional: `Notificacion` al cliente.
+- **Cargas:** `ProgresoEjercicio` = una fila **por serie** (`numero_serie`);
+  `editado_por_entrenador` marca lo que corrigió el entrenador.
+- **Mis clientes del entrenador:** clientes con alguna `AsignacionRutina` de ese entrenador.
+  Sesión = fecha distinta con registros de cargas; adherencia = sesiones / días planeados de las
+  últimas 4 semanas; "necesita atención" = sin rutina activa o más de 7 días sin entrenar.
 - **Catálogos:** `Ejercicio` y `Alimento` tienen `activo` (migración 0004). Nada se borra desde
   el panel: usuarios, sedes, membresías, ejercicios y alimentos se **desactivan**. Los
   inactivos no deben ofrecerse en rutinas/dietas nuevas.
@@ -131,9 +149,27 @@ Organización (la que dejó el usuario; seguirla):
 | `/registro/` | Pide nombre, apellido, correo y contraseña; crea Usuario (rol CLIENTE) + Cliente e inicia sesión (vista `registro`) | `registro.html`, `cuenta.css`, `cuenta.js` |
 | `/salir/` | Cierra sesión (solo POST, por seguridad) | botón en `base.html` |
 | `/panel/...` | Panel de administración (ver abajo) | `views_panel.py`, `templates/panel/`, `panel.css`, `panel.js` |
+| `/entrenador/` | Resumen del entrenador: 4 indicadores, clientes que necesitan atención y borradores | `views_entrenador.py`, `entrenador/resumen.html` |
+| `/entrenador/clientes/` | Mis clientes: indicadores, filtros (activos, sin rutina, atención, inactivos), tabla con peso, rutina y semana, adherencia y última sesión | `entrenador/clientes.html`, `entrenador.css`, `entrenador.js` |
+| `/entrenador/clientes/<id>/` | Detalle: KPI, gráfico de peso (12 sem / 6 meses), registrar peso, rutina actual, historial de cargas por serie (editable) | `entrenador/cliente.html` |
+| `POST /entrenador/clientes/<id>/asignar/` | Modal "Asignar rutina" (reemplaza la activa, semana de inicio, nota, notificación) | `entrenador/_modal_asignar.html` |
+| `/rutinas/` | Mis rutinas (entrenador **y cliente**, mismo código) + modal "Nueva rutina" (paso 1) | `views_rutinas.py`, `rutinas/rutinas.html`, `rutinas.css`, `rutinas.js` |
+| `/rutinas/<id>/` | Constructor semana a semana (paso 2): días con nombre, series por fila, duplicar/mover semanas, arrastrar ejercicios, autoguardado (`POST /rutinas/<id>/guardar/`, JSON), publicar | `rutinas/constructor.html`, `constructor.css`, `constructor.js` |
+| `/ejercicios/` | Biblioteca (catálogo + personalizados) y modal "Crear ejercicio nuevo" (también en el constructor) | `rutinas/ejercicios.html`, `rutinas/_modal_ejercicio.html`, `ejercicio-nuevo.js` |
+| `/mensajes/` | Bandeja con pestañas **Clientes** / **Equipo de trabajo** (el cliente ve una sola lista); chat con burbujas | `views_mensajes.py`, `mensajes/mensajes.html`, `mensajes.css`, `mensajes.js` |
 
-Después de ingresar: el administrador va a `/panel/` (si no hay `?next=`); los demás al inicio.
-En el encabezado, los administradores ven un botón "Panel". Para usuarios con sesión los botones Premium dicen "Pago en línea muy
+Después de ingresar: el administrador va a `/panel/` y el entrenador a `/entrenador/` (si no hay
+`?next=`); los demás al inicio. En el encabezado: "Panel" (administrador), "Mi panel"
+(entrenador), "Mis rutinas" (cliente) o "Mensajes" (demás empleados).
+
+### Panel del entrenador
+Solo rol ENTRENADOR (decorador `solo_entrenadores` en `views_entrenador.py`). Base
+`entrenador/base_entrenador.html` (carga `panel.css` + `entrenador.css` y `panel.js`): su barra
+lateral cambia según el rol (entrenador: Resumen · Mis rutinas · Ejercicios · Mis clientes ·
+Mensajes; cliente: Mis rutinas · Ejercicios · Mensajes; otros: Mensajes). El contador de no leídos
+es la etiqueta `{% mensajes_no_leidos user %}`. Componentes nuevos (chips, barra de progreso,
+etiquetas, selector segmentado...) en `entrenador.css`. Rutinas y ejercicios usan el decorador
+`con_rutinas` (entrenador y cliente); solo el autor ve y edita su rutina (404 si no). Para usuarios con sesión los botones Premium dicen "Pago en línea muy
 pronto". Pruebas en `gmf/tests.py` (`python manage.py test gmf`).
 
 ### Panel de administración (`/panel/`)
@@ -158,8 +194,10 @@ Resumen · Empleados · Clientes · Sedes · Membresías · Ejercicios · Alimen
   sesión y se borra al mostrarla).
 
 ### Siguientes
-Panel del cliente, rutinas, dietas; citas, vistas del profesional, pagos y facturas (y desde
-ahí activar Premium en el panel).
+Panel del cliente (registrar sesiones/cargas, ver su rutina asignada), dietas; vistas del
+nutricionista y fisioterapeuta, citas, pagos y facturas (y desde ahí activar Premium en el panel).
+Pendiente en el entrenador: "Invitar cliente" (no hay flujo) y rutinas "guardadas" desde las
+públicas (hoy el filtro existe pero solo cuenta copias de rutinas de otros autores).
 
 ## Forma de trabajar con Claude
 - **Preguntar antes de asumir.** Antes de crear o modificar algo, consultar las decisiones

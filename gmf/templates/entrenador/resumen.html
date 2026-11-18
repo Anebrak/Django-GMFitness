@@ -1,0 +1,63 @@
+{% extends "entrenador/base_entrenador.html" %}
+{% load gmf_extras %}
+
+{% block titulo_pagina %}Resumen{% endblock %}
+
+{% block pagina %}
+    <div id="encabezado-modulo">
+        <div>
+            <h1 id="titulo-modulo">Hola, {{ user.first_name|default:"entrenador" }}</h1>
+            <p class="descripcion-modulo">Así van tus clientes y tus rutinas hoy.</p>
+        </div>
+        <a class="boton-primario" href="{% url 'rutinas' %}?nueva=1"><i class="fa-solid fa-plus"></i> Crear rutina</a>
+    </div>
+
+    {% include "entrenador/_kpis.html" %}
+
+    <div id="paneles-entrenador">
+        <section class="panel-caja">
+            <div class="panel-caja-titulo">
+                <h2>Necesitan atención</h2>
+                <a href="{% url 'entrenador_clientes' %}?filtro=atencion">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            {% if atencion %}
+                <ul class="lista-resumen">
+                    {% for f in atencion %}
+                        <li>
+                            <span class="usuario-bola" aria-hidden="true">{{ f.usuario|iniciales }}</span>
+                            <div>
+                                <a class="enlace-persona" href="{% url 'entrenador_cliente' f.cliente.pk %}">{{ f.usuario.get_full_name|default:f.usuario.email }}</a>
+                                <small>{% if not f.asignacion %}Sin rutina asignada{% else %}Última sesión: {{ f.texto_ultima|lower }}{% endif %}</small>
+                            </div>
+                            {% if not f.asignacion %}<span class="etiqueta-sin-rutina">Sin rutina</span>{% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="vacio-panel">Todo en orden: tus clientes tienen rutina y entrenaron esta semana.</p>
+            {% endif %}
+        </section>
+
+        <section class="panel-caja">
+            <div class="panel-caja-titulo">
+                <h2>Borradores</h2>
+                <a href="{% url 'rutinas' %}?filtro=borradores">Mis rutinas ({{ total_rutinas }}) <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            {% if borradores %}
+                <ul class="lista-resumen">
+                    {% for r in borradores %}
+                        <li>
+                            <span class="icono-dato" style="width:40px;height:40px;font-size:1rem;border-radius:10px;" aria-hidden="true"><i class="fa-solid fa-dumbbell"></i></span>
+                            <div>
+                                <a class="enlace-persona" href="{% url 'rutina_constructor' r.pk %}">{{ r.nombre }}</a>
+                                <small>{{ r.semanas }} semanas · {{ r.dias_por_semana }} días/sem</small>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="vacio-panel">No tienes rutinas en borrador.</p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

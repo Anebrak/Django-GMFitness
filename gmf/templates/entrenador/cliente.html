@@ -1,0 +1,223 @@
+{% extends "entrenador/base_entrenador.html" %}
+{% load static gmf_extras %}
+
+{% block titulo_pagina %}{{ usuario_cliente.get_full_name|default:usuario_cliente.email }}{% endblock %}
+
+{% block pagina %}
+    {% with u=usuario_cliente %}
+    <!-- ============ Cabecera ============ -->
+    <div class="cabecera-hundida">
+        <a class="btn-solo-icono" href="{% url 'entrenador_clientes' %}" aria-label="Volver a Mis clientes"><i class="fa-solid fa-arrow-left"></i></a>
+        <span class="usuario-bola grande" aria-hidden="true">{{ u|iniciales }}</span>
+        <div>
+            <h1>{{ u.get_full_name|default:u.email }}
+                {% if u.is_active %}<span class="etiqueta-estado activo">Activa</span>{% else %}<span class="etiqueta-estado inactivo">Inactiva</span>{% endif %}
+            </h1>
+            <p>
+                {% if asignacion.rutina.objetivo %}Objetivo: {{ asignacion.rutina.objetivo|lower }} · {% endif %}
+                {% if cliente.altura %}{{ cliente.altura|kg }} cm · {% endif %}
+                Cliente desde {{ u.date_joined|date:"F Y"|lower }}
+            </p>
+        </div>
+        <div class="cabecera-acciones">
+            <a class="boton-secundario" href="{% url 'conversacion' u.id %}"><i class="fa-solid fa-comments"></i> Enviar mensaje</a>
+            {% if u.is_active %}
+                <button type="button" class="boton-primario" data-asignar
+                        data-url="{% url 'entrenador_asignar' cliente.pk %}"
+                        data-nombre="{{ u.get_full_name|default:u.email }}" data-nombre-corto="{{ u.first_name|default:u.email }}"
+                        data-iniciales="{{ u|iniciales }}"
+                        {% if asignacion %}data-actual="{{ asignacion.rutina_id }}" data-actual-texto="«{{ asignacion.rutina.nombre }}» (semana {{ asignacion.semana_actual }} de {{ asignacion.rutina.semanas }})"{% endif %}>
+                    <i class="fa-solid fa-clipboard-list"></i> Asignar rutina
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ============ KPI ============ -->
+    <div class="tarjetas-cuatro">
+        <div class="tarjeta-dato">
+            <span class="icono-dato"><i class="fa-solid fa-weight-scale" aria-hidden="true"></i></span>
+            <span class="valor-dato">{% if cliente.peso %}{{ cliente.peso|kg }} kg{% else %}—{% endif %}</span>
+            <span class="nombre-dato">Peso actual</span>
+            {% if variacion_12 is not None %}<span class="detalle-dato"><span class="variacion {% if variacion_12 < 0 %}baja{% elif variacion_12 > 0 %}sube{% endif %}">{{ variacion_12|con_signo }} kg</span> en 12 semanas</span>{% endif %}
+        </div>
+        <div class="tarjeta-dato">
+            <span class="icono-dato"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></span>
+            <span class="valor-dato">{% if adherencia is None %}—{% else %}{{ adherencia }} %{% endif %}</span>
+            <span class="nombre-dato">Adherencia</span>
+            {% if adherencia is not None %}<span class="detalle-dato">{{ sesiones_hechas }} de {{ sesiones_planeadas }} sesiones</span>{% endif %}
+        </div>
+        <div class="tarjeta-dato">
+            <span class="icono-dato"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></span>
+            <span class="valor-dato">{{ vol_semana|kg }} kg</span>
+            <span class="nombre-dato">Volumen semanal</span>
+            {% if vol_cambio is not None %}<span class="detalle-dato"><span class="variacion {% if vol_cambio >= 0 %}baja{% else %}sube{% endif %}">{% if vol_cambio >= 0 %}+{% endif %}{{ vol_cambio }} %</span> vs. semana anterior</span>{% endif %}
+        </div>
+        <div class="tarjeta-dato">
+            <span class="icono-dato"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span>
+            <span class="valor-dato">{{ texto_ultima }}</span>
+            <span class="nombre-dato">Última sesión</span>
+        </div>
+    </div>
+
+    <div class="rejilla-detalle">
+        <!-- ============ Peso corporal ============ -->
+        <section class="panel-caja">
+            <div class="panel-caja-titulo">
+                <h2>Peso corporal</h2>
+                <div class="grupo-chips">
+                    <a class="chip chip-chico{% if rango == '12' %} activo{% endif %}" href="?rango=12{% if ejercicio_id %}&ejercicio={{ ejercicio_id }}{% endif %}">12 sem</a>
+                    <a class="chip chip-chico{% if rango == '26' %} activo{% endif %}" href="?rango=26{% if ejercicio_id %}&ejercicio={{ ejercicio_id }}{% endif %}">6 meses</a>
+                    <button type="button" class="boton-naranja-suave boton-chico" id="btn-registrar-peso"><i class="fa-solid fa-plus"></i> Registrar peso</button>
+                </div>
+            </div>
+            {% if cliente.peso %}
+                <div class="grafico-barras{% if rango == '26' %} muchas{% endif %}" role="img"
+                     aria-label="Peso de las últimas {{ rango }} semanas: de {{ barras.0.valor|kg }} a {{ cliente.peso|kg }} kg">
+                    {% for b in barras %}
+                        <div class="barra" aria-hidden="true">
+                            {% if b.valor is not None %}<b>{{ b.valor|kg }}</b><span style="height: {{ b.alto }}%"></span>{% else %}<span style="height: 0"></span>{% endif %}
+                            <small>{{ b.etiqueta }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="vacio-panel">Aún no hay pesos registrados.</p>
+            {% endif %}
+        </section>
+
+        <!-- ============ Rutina actual ============ -->
+        <section class="panel-caja">
+            <div class="panel-caja-titulo"><h2>Rutina actual</h2>{% if asignacion %}<span class="etiqueta-en-curso">En curso</span>{% endif %}</div>
+            {% if asignacion %}
+                <p style="margin:0;font-weight:700;font-size:1.1rem;">{{ asignacion.rutina.nombre }}</p>
+                <p class="texto-gris" style="margin:0;">{{ asignacion.rutina.semanas }} semanas · {{ asignacion.rutina.dias_por_semana }} días/sem · asignada el {{ asignacion.fecha_asignacion|date:"j M Y"|lower }}</p>
+                <div style="margin-top:1rem;">
+                    <div style="display:flex;justify-content:space-between;font-size:.9rem;"><span>Semana {{ asignacion.semana_actual }} de {{ asignacion.rutina.semanas }}</span><span>{{ progreso_pct }} %</span></div>
+                    <span class="barra-progreso" role="progressbar" aria-valuenow="{{ progreso_pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="Avance de la rutina"><span style="width: {{ progreso_pct }}%"></span></span>
+                </div>
+                {% if proxima %}
+                    <div class="bloque-hundido">
+                        <p class="texto-gris" style="font-size:.85rem;">Próxima sesión</p>
+                        <p><strong>Día {{ proxima.dia }}{% if proxima.nombre %} · {{ proxima.nombre }}{% endif %}</strong></p>
+                        <p class="texto-gris" style="font-size:.9rem;">{{ proxima.ejercicios }} ejercicio{{ proxima.ejercicios|pluralize }}{% if proxima.minutos %} · ~{{ proxima.minutos }} min{% endif %}</p>
+                    </div>
+                {% endif %}
+                {% if asignacion.nota %}<p class="texto-gris" style="font-size:.9rem;"><i class="fa-solid fa-note-sticky"></i> {{ asignacion.nota }}</p>{% endif %}
+                <div class="botones-columna">
+                    {% if asignacion.rutina.autor_id == user.id %}
+                        <a class="boton-secundario boton-chico" href="{% url 'rutina_constructor' asignacion.rutina_id %}">Ver / editar rutina</a>
+                    {% endif %}
+                    <button type="button" class="boton-naranja-suave" data-asignar
+                            data-url="{% url 'entrenador_asignar' cliente.pk %}"
+                            data-nombre="{{ u.get_full_name|default:u.email }}" data-nombre-corto="{{ u.first_name|default:u.email }}"
+                            data-iniciales="{{ u|iniciales }}" data-actual="{{ asignacion.rutina_id }}"
+                            data-actual-texto="«{{ asignacion.rutina.nombre }}» (semana {{ asignacion.semana_actual }} de {{ asignacion.rutina.semanas }})">Cambiar rutina</button>
+                </div>
+            {% else %}
+                <p><span class="etiqueta-sin-rutina">Sin rutina</span></p>
+                <p class="vacio-panel">{{ u.first_name|default:"Este cliente" }} no tiene una rutina activa.</p>
+            {% endif %}
+        </section>
+    </div>
+
+    <!-- ============ Historial de cargas ============ -->
+    <section class="panel-caja modo-vista" id="historial-cargas">
+        <div class="panel-caja-titulo">
+            <h2>Historial de cargas</h2>
+            {% if historial and historial.filas %}
+                <button type="button" class="boton-naranja-suave boton-chico solo-vista" id="btn-editar-cargas"><i class="fa-solid fa-pen"></i> Editar registros</button>
+            {% endif %}
+        </div>
+        {% if ejercicios_registrados %}
+            <div class="grupo-chips" aria-label="Ejercicio">
+                {% for e in ejercicios_registrados %}
+                    <a class="chip chip-chico{% if e.ejercicio_id == ejercicio_id %} activo{% endif %}" href="?ejercicio={{ e.ejercicio_id }}&rango={{ rango }}#historial-cargas">{{ e.ejercicio__nombre }}</a>
+                {% endfor %}
+            </div>
+
+            <div class="mini-kpis">
+                <div class="mini-kpi"><span>Mejor serie</span><strong id="kpi-mejor">{% if historial.mejor %}{{ historial.mejor.kg|kg }} kg × {{ historial.mejor.reps }}{% else %}—{% endif %}</strong></div>
+                <div class="mini-kpi"><span>1RM estimado (Epley)</span><strong id="kpi-rm">{% if historial.rm %}{{ historial.rm|kg }} kg{% else %}—{% endif %}</strong></div>
+                <div class="mini-kpi"><span>Progreso desde el primer registro</span><strong id="kpi-progreso">{% if historial.progreso is not None %}{{ historial.progreso|con_signo }} kg{% else %}—{% endif %}</strong></div>
+            </div>
+
+            <p class="caja-aviso solo-edicion"><i class="fa-solid fa-pen" aria-hidden="true"></i>
+                Estás editando los registros de {{ u.first_name|default:u.email }}. Los valores cambiados quedarán marcados como «Editado por entrenador».</p>
+
+            <form method="post" action="{% url 'entrenador_cargas' cliente.pk %}" id="form-cargas">
+                {% csrf_token %}
+                <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+                <div id="tabla-contenedor" style="margin-top:1rem;">
+                    <table id="tabla" class="tabla-cargas">
+                        <thead>
+                            <tr>
+                                <th scope="col">Fecha</th>
+                                {% for n in historial.columnas %}<th scope="col">Serie {{ n }}</th>{% endfor %}
+                                <th scope="col" class="numero">Volumen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-cargas">
+                            {% for fila in historial.filas %}
+                                <tr data-fila>
+                                    <td>{{ fila.fecha|date:"j M"|lower }}{% if fila.semana %}<small>Semana {{ fila.semana }}</small>{% endif %}</td>
+                                    {% for s in fila.series %}
+                                        <td>
+                                            <span class="solo-vista">{{ s.kg|kg }} kg × {{ s.reps }}{% if s.editado %}<i class="fa-solid fa-pen marca-editado" title="Editado por entrenador" aria-label="Editado por entrenador"></i>{% endif %}</span>
+                                            <span class="celda-serie solo-edicion">
+                                                <input class="input-kg" name="kg_{{ s.id }}" value="{{ s.kg_texto }}" inputmode="decimal" aria-label="Kg serie {{ forloop.counter }} del {{ fila.fecha|date:'j M' }}" data-original="{{ s.kg_texto }}" disabled>
+                                                ×
+                                                <input class="input-reps" name="reps_{{ s.id }}" value="{{ s.reps }}" inputmode="numeric" aria-label="Repeticiones serie {{ forloop.counter }} del {{ fila.fecha|date:'j M' }}" data-original="{{ s.reps }}" disabled>
+                                            </span>
+                                        </td>
+                                    {% endfor %}
+                                    {% for _ in historial.columnas %}{% if forloop.counter > fila.series|length %}<td></td>{% endif %}{% endfor %}
+                                    <td class="numero" data-volumen>{{ fila.volumen|kg }} kg</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-botones solo-edicion">
+                    <button type="button" class="boton-secundario" id="btn-cancelar-cargas">Cancelar</button>
+                    <button type="submit" class="boton-primario">Guardar cambios</button>
+                </div>
+            </form>
+        {% else %}
+            <p class="vacio-panel">{{ u.first_name|default:"El cliente" }} todavía no ha registrado cargas.</p>
+        {% endif %}
+    </section>
+
+    <!-- ============ Modal: registrar peso ============ -->
+    <div class="modal-overlay{% if modal_peso_abierto %} activo{% endif %}" id="modal-peso" aria-hidden="{% if modal_peso_abierto %}false{% else %}true{% endif %}">
+        <div class="modal-caja modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="titulo-peso" style="text-align:left;">
+            <button type="button" class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">&times;</button>
+            <h2 id="titulo-peso">Registrar peso</h2>
+            <form method="post" action="{% url 'entrenador_peso' cliente.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+                <div class="fila-campos">
+                    <div class="grupo-campo{% if errores_peso.peso %} con-error{% endif %}">
+                        <label for="peso-kg">Peso (kg) <span class="obligatorio" aria-hidden="true">*</span></label>
+                        <input id="peso-kg" name="peso" inputmode="decimal" required placeholder="62,4" value="{{ valores_peso.peso }}">
+                        {% for m in errores_peso|dato:"peso" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                    </div>
+                    <div class="grupo-campo{% if errores_peso.fecha %} con-error{% endif %}">
+                        <label for="peso-fecha">Fecha</label>
+                        <input id="peso-fecha" type="date" name="fecha" max="{{ hoy|date:'Y-m-d' }}" value="{% if valores_peso.fecha %}{{ valores_peso.fecha }}{% else %}{{ hoy|date:'Y-m-d' }}{% endif %}">
+                        {% for m in errores_peso|dato:"fecha" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                    </div>
+                </div>
+                <div class="modal-botones">
+                    <button type="button" class="boton-secundario" data-cerrar-modal>Cancelar</button>
+                    <button type="submit" class="boton-primario">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endwith %}
+
+    {% include "entrenador/_modal_asignar.html" %}
+{% endblock %}
+
+{% block scripts_pagina %}<script src="{% static 'js/entrenador.js' %}"></script>{% endblock %}

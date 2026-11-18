@@ -1,7 +1,7 @@
 """
 Modelos de GMFitness.
 
-Basados en el diagrama de clases "Diagrama de clases GMF v2".
+Basados en el diagrama de clases "Diagrama de clases GMF v3".
 Equivalencias con el diagrama:
 - Usuario hereda de AbstractUser: nombre -> first_name, apellido -> last_name,
   contrasenaHash -> password (Django la cifra), activo -> is_active,
@@ -139,6 +139,32 @@ class TipoRepeticiones(models.TextChoices):
 class TipoEsfuerzo(models.TextChoices):
     RIR = "RIR", "RIR"
     ARM = "ARM", "ARM"
+
+
+class EstadoRutina(models.TextChoices):
+    # Las rutinas son plantillas: se editan en borrador y se publican para poder asignarlas
+    BORRADOR = "BORRADOR", "Borrador"
+    PUBLICADA = "PUBLICADA", "Publicada"
+
+
+class TipoObjetivoEjercicio(models.TextChoices):
+    REPS = "REPS", "Reps"            # series x repeticiones
+    TIEMPO = "TIEMPO", "Tiempo"      # series x segundos (planchas, cardio...)
+
+
+# Equipo de un ejercicio (se guarda el texto en Ejercicio.maquina)
+EQUIPOS = [
+    "Barra", "Mancuerna", "Kettlebell", "Máquina", "Peso corporal", "Cardio",
+    "Máquina Smith", "Polea", "Barra de seguridad", "Otro",
+]
+
+# Grupos musculares (Ejercicio.musculo guarda uno o varios separados por coma)
+GRUPOS_MUSCULARES = [
+    "Pecho", "Deltoides anterior", "Deltoides medio", "Deltoides posterior", "Bíceps", "Tríceps",
+    "Antebrazos", "Dorsales", "Espalda alta", "Espalda baja", "Cuello", "Abdomen", "Glúteos",
+    "Isquiotibiales", "Cuádriceps", "Abductores", "Aductores", "Pantorrillas", "Olímpico",
+    "Cuerpo completo", "Otro",
+]
 
 
 class ParteCuerpo(models.TextChoices):
@@ -553,10 +579,21 @@ class ProgresoFisico(models.Model):
 
 class Ejercicio(models.Model):
     nombre = models.CharField(max_length=150)
-    musculo = models.CharField("grupo muscular", max_length=100)
+    musculo = models.CharField(
+        "grupo muscular", max_length=300, help_text="Uno o varios, separados por coma."
+    )
     maquina = models.CharField("máquina / equipo", max_length=100, blank=True)
+    tipo_objetivo = models.CharField(
+        "tipo de objetivo", max_length=10, choices=TipoObjetivoEjercicio.choices,
+        default=TipoObjetivoEjercicio.REPS,
+    )
     imagen_url = models.URLField("URL de la imagen", blank=True)
+    video_url = models.URLField("video de YouTube", blank=True)
     descripcion = models.TextField(blank=True)
+    autor = models.ForeignKey(
+        "Usuario", on_delete=models.SET_NULL, null=True, blank=True, related_name="ejercicios_creados",
+        help_text="Vacío = catálogo del gimnasio. Con autor = ejercicio personalizado de ese usuario.",
+    )
     activo = models.BooleanField(default=True, help_text="Inactivo = no se ofrece en rutinas nuevas.")
 
     class Meta:
@@ -564,6 +601,10 @@ class Ejercicio(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.musculo})"
+
+    @property
+    def lista_musculos(self):
+        return [m.strip() for m in self.musculo.split(",") if m.strip()]
 
 
 class Rutina(models.Model):
@@ -574,8 +615,14 @@ class Rutina(models.Model):
     descripcion = models.TextField(blank=True)
     nivel = models.CharField(max_length=20, choices=NivelRutina.choices, blank=True)
     semanas = models.PositiveSmallIntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(24)])
+    dias_por_semana = models.PositiveSmallIntegerField(
+        "días por semana", default=4, validators=[MinValueValidator(1), MaxValueValidator(7)],
+        help_text="Días de entrenamiento que se crean en cada semana.",
+    )
+    estado = models.CharField(max_length=10, choices=EstadoRutina.choices, default=EstadoRutina.BORRADOR)
     visibilidad = models.CharField(max_length=10, choices=Visibilidad.choices, default=Visibilidad.PRIVADA)
     autor = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="rutinas_creadas")
+    fecha_actualizacion = models.DateTimeField("última modificación", auto_now=True)
     copia_de = models.ForeignKey(
         "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="copias"
     )
@@ -585,21 +632,61 @@ class Rutina(models.Model):
         return self.nombre
 
     @property
-    def dias_por_semana(self):
-        """Mayor numero de dias que tiene alguna semana de la rutina."""
-        return self.detalle.aggregate(m=models.Max("dia"))["m"] or 0
+    def publicada(self):
+        return self.estado == EstadoRutina.PUBLICADA
+
+    def crear_dias(self):
+        """Crea los días vacíos que falten (dias_por_semana en cada semana)."""
+        existentes = set(self.dias.values_list("semana", "dia"))
+        DiaRutina.objects.bulk_create([
+            DiaRutina(rutina=self, semana=s, dia=d)
+            for s in range(1, self.semanas + 1)
+            for d in range(1, self.dias_por_semana + 1)
+            if (s, d) not in existentes
+        ])
 
     def duplicar(self, nuevo_autor):
         copia = Rutina.objects.create(
             nombre=f"{self.nombre} (copia)", objetivo=self.objetivo, descripcion=self.descripcion,
-            nivel=self.nivel, semanas=self.semanas,
+            nivel=self.nivel, semanas=self.semanas, dias_por_semana=self.dias_por_semana,
+            estado=EstadoRutina.BORRADOR,
             visibilidad=Visibilidad.PRIVADA, autor=nuevo_autor, copia_de=self,
         )
-        for re in self.detalle.all():
+        for dia in self.dias.all():
+            dia.pk = None
+            dia.rutina = copia
+            dia.save()
+        for re in self.detalle.prefetch_related("series_detalle"):
+            series = list(re.series_detalle.all())
             re.pk = None
             re.rutina = copia
             re.save()
+            for serie in series:
+                serie.pk = None
+                serie.rutina_ejercicio = re
+                serie.save()
         return copia
+
+
+class DiaRutina(models.Model):
+    """Un día de entrenamiento de una semana (puede estar vacío y tener nombre)."""
+
+    rutina = models.ForeignKey(Rutina, on_delete=models.CASCADE, related_name="dias")
+    semana = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(24)])
+    dia = models.PositiveSmallIntegerField("día", validators=[MinValueValidator(1), MaxValueValidator(7)])
+    nombre = models.CharField(max_length=60, blank=True, help_text='Ej: "Pecho y tríceps".')
+
+    class Meta:
+        verbose_name = "día de la rutina"
+        verbose_name_plural = "días de la rutina"
+        ordering = ["rutina", "semana", "dia"]
+        constraints = [
+            models.UniqueConstraint(fields=["rutina", "semana", "dia"], name="dia_rutina_unico")
+        ]
+
+    def __str__(self):
+        texto = f"S{self.semana} Día {self.dia}"
+        return f"{texto} · {self.nombre}" if self.nombre else texto
 
 
 class RutinaEjercicio(models.Model):
@@ -637,6 +724,23 @@ class RutinaEjercicio(models.Model):
             return "AMRAP"
         return f"{self.repeticiones_min} máx."
 
+    def texto_resumen(self):
+        """Ej: "4 series × 8–10 reps · 70 kg" (usa la primera serie y la carga mayor)."""
+        series = list(self.series_detalle.all())
+        unidad = "s" if self.ejercicio.tipo_objetivo == TipoObjetivoEjercicio.TIEMPO else "reps"
+        partes = [f"{self.series} serie{'s' if self.series != 1 else ''}"]
+        if self.tipo_repeticiones == TipoRepeticiones.AMRAP:
+            partes[0] += " × AMRAP"
+        else:
+            primera = series[0] if series else self
+            mi, ma = primera.repeticiones_min, primera.repeticiones_max
+            if mi:
+                partes[0] += f" × {mi}–{ma} {unidad}" if ma and ma != mi else f" × {mi} {unidad}"
+        cargas = [s.carga_kg for s in series if s.carga_kg]
+        if cargas:
+            partes.append(f"{max(cargas).normalize():f} kg")
+        return " · ".join(partes)
+
     def clean(self):
         errores = {}
         if self.rutina_id and self.semana and self.semana > self.rutina.semanas:
@@ -655,6 +759,30 @@ class RutinaEjercicio(models.Model):
             raise ValidationError(errores)
 
 
+class SerieRutina(models.Model):
+    """Una serie de un ejercicio de la rutina: cada serie puede tener reps, carga y descanso distintos."""
+
+    rutina_ejercicio = models.ForeignKey(RutinaEjercicio, on_delete=models.CASCADE, related_name="series_detalle")
+    numero = models.PositiveSmallIntegerField("número de serie", validators=[MinValueValidator(1), MaxValueValidator(20)])
+    repeticiones_min = models.PositiveSmallIntegerField(
+        null=True, blank=True, help_text="Reps (o segundos si el ejercicio es por tiempo). Vacío en AMRAP."
+    )
+    repeticiones_max = models.PositiveSmallIntegerField(null=True, blank=True, help_text="Solo para rango.")
+    carga_kg = models.DecimalField("carga (kg)", max_digits=6, decimal_places=2, null=True, blank=True, validators=POSITIVO)
+    descanso_segundos = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "serie de la rutina"
+        verbose_name_plural = "series de la rutina"
+        ordering = ["rutina_ejercicio", "numero"]
+        constraints = [
+            models.UniqueConstraint(fields=["rutina_ejercicio", "numero"], name="serie_rutina_unica")
+        ]
+
+    def __str__(self):
+        return f"{self.rutina_ejercicio.ejercicio.nombre} - serie {self.numero}"
+
+
 class AsignacionRutina(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, related_name="asignaciones_rutina")
     entrenador = models.ForeignKey(
@@ -665,6 +793,10 @@ class AsignacionRutina(models.Model):
     fecha_asignacion = models.DateField(auto_now_add=True)
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField()
+    semana_inicio = models.PositiveSmallIntegerField(
+        "empezar en la semana", default=1, validators=[MinValueValidator(1), MaxValueValidator(24)]
+    )
+    nota = models.TextField("nota para el cliente", blank=True)
     estado = models.CharField(max_length=20, choices=EstadoAsignacion.choices, default=EstadoAsignacion.ACTIVA)
 
     class Meta:
@@ -679,6 +811,15 @@ class AsignacionRutina(models.Model):
         hoy = timezone.localdate()
         return self.estado == EstadoAsignacion.ACTIVA and self.fecha_inicio <= hoy <= self.fecha_fin
 
+    def semana_de(self, fecha):
+        """Semana de la rutina en una fecha (empieza en semana_inicio, máximo rutina.semanas)."""
+        semana = max((fecha - self.fecha_inicio).days, 0) // 7 + self.semana_inicio
+        return min(semana, self.rutina.semanas)
+
+    @property
+    def semana_actual(self):
+        return self.semana_de(timezone.localdate())
+
 
 class ProgresoEjercicio(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name="progresos_ejercicio")
@@ -692,6 +833,10 @@ class ProgresoEjercicio(models.Model):
     repeticiones_realizadas = models.PositiveSmallIntegerField()
     carga_kg = models.DecimalField("peso (kg)", max_digits=6, decimal_places=2, default=0, validators=POSITIVO)
     intensidad = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True, validators=POSITIVO)
+    numero_serie = models.PositiveSmallIntegerField(
+        "número de serie", null=True, blank=True, help_text="Una fila por serie (1, 2, 3...)."
+    )
+    editado_por_entrenador = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "progreso de ejercicio"

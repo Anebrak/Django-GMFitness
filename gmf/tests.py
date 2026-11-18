@@ -306,3 +306,300 @@ class PanelCatalogosTests(PanelBase):
         s = Sede.objects.create(nombre="S", direccion="x", ciudad="x", telefono="1")
         r = self.client.post(reverse("panel_estado", args=["sedes", s.pk]), {"volver": "https://malo.com/"})
         self.assertRedirects(r, reverse("panel_sedes"))
+
+
+# =========================================================
+# Panel del entrenador, rutinas, ejercicios y mensajes
+# =========================================================
+import json
+from datetime import timedelta
+
+from django.utils import timezone
+
+from .models import (
+    AsignacionRutina, DiaRutina, Ejercicio, EstadoAsignacion, EstadoRutina, Mensaje, Notificacion,
+    ProgresoEjercicio, ProgresoFisico, Rutina, SerieRutina,
+)
+
+
+def crear_entrenador(email="ent@gmf.co", nombre="Carlos"):
+    u = Usuario.objects.create_user(email, "x", first_name=nombre, last_name="Méndez", rol=RolUsuario.ENTRENADOR)
+    Entrenador.objects.create(usuario=u, especialidad="Fuerza")
+    return u
+
+
+def crear_cliente(email="laura@gmf.co", nombre="Laura"):
+    u = Usuario.objects.create_user(email, "x", first_name=nombre, last_name="Gómez", rol=RolUsuario.CLIENTE)
+    return Cliente.objects.create(usuario=u)
+
+
+def estado_simple(ejercicio_id, semanas=2):
+    """Constructor con un ejercicio en el día 1 de cada semana."""
+    return {"accion": "guardar", "nombre": "Hipertrofia volumen", "semanas": [
+        {"dias": [
+            {"nombre": "Pecho y tríceps", "ejercicios": [{
+                "ejercicio": ejercicio_id, "tipo_repeticiones": "RANGO", "tipo_esfuerzo": "RIR", "valor_esfuerzo": 2,
+                "series": [{"min": 8, "max": 10, "kg": "70", "descanso": 90},
+                           {"min": 8, "max": 10, "kg": "72.5", "descanso": 90},
+                           {"min": 6, "max": 8, "kg": "75", "descanso": 120}]}]},
+            {"nombre": "", "ejercicios": []},
+        ]} for _ in range(semanas)]}
+
+
+class AccesoEntrenadorTests(TestCase):
+    def test_solo_entrenadores_y_redireccion_al_ingresar(self):
+        ent = crear_entrenador()
+        cli = crear_cliente()
+        self.assertRedirects(self.client.get(reverse("entrenador_clientes")),
+                             f"{reverse('ingresar')}?next={reverse('entrenador_clientes')}")
+        self.client.force_login(cli.usuario)
+        self.assertRedirects(self.client.get(reverse("entrenador_resumen")), reverse("inicio"))
+        self.client.logout()
+        r = self.client.post(reverse("ingresar"), {"email": "ent@gmf.co", "password": "x"})
+        self.assertRedirects(r, reverse("entrenador_resumen"))
+        r = self.client.get(reverse("entrenador_resumen"))
+        self.assertContains(r, "Mis clientes")
+        self.assertContains(r, "Mensajes")
+
+    def test_el_cliente_usa_rutinas_pero_no_el_panel(self):
+        cli = crear_cliente()
+        self.client.force_login(cli.usuario)
+        r = self.client.get(reverse("rutinas"))
+        self.assertEqual(r.status_code, 200)
+        self.assertNotContains(r, reverse("entrenador_clientes"))
+        recep = Usuario.objects.create_user("r@gmf.co", "x", rol=RolUsuario.RECEPCIONISTA)
+        self.client.force_login(recep)
+        self.assertRedirects(self.client.get(reverse("rutinas")), reverse("inicio"))
+
+
+class RutinasTests(TestCase):
+    def setUp(self):
+        self.ent = crear_entrenador()
+        self.client.force_login(self.ent)
+        self.press = Ejercicio.objects.create(nombre="Press banca", musculo="Pecho", maquina="Barra")
+
+    def test_crear_rutina_crea_dias_y_va_al_constructor(self):
+        r = self.client.post(reverse("rutinas"), {"nombre": "PPL", "semanas": "8", "dias_por_semana": "6",
+                                                  "objetivo": "Fuerza"})
+        rutina = Rutina.objects.get(nombre="PPL")
+        self.assertRedirects(r, reverse("rutina_constructor", args=[rutina.pk]))
+        self.assertEqual(rutina.estado, EstadoRutina.BORRADOR)
+        self.assertEqual(rutina.dias.count(), 48)
+        r = self.client.get(reverse("rutinas"))
+        self.assertContains(r, "PPL")
+        self.assertContains(r, "Borrador")
+        self.assertNotContains(r, "En curso")  # el entrenador no "inicia" rutinas
+
+    def test_crear_rutina_errores(self):
+        r = self.client.post(reverse("rutinas"), {"nombre": "x" * 51, "semanas": "30", "dias_por_semana": "9"})
+        self.assertEqual(r.status_code, 400)
+        for campo in ("nombre", "semanas", "dias_por_semana"):
+            self.assertIn(campo, r.context["errores"])
+        self.assertTrue(r.context["modal_abierto"])
+
+    def test_guardar_y_publicar_constructor(self):
+        rutina = Rutina.objects.create(nombre="H", semanas=2, dias_por_semana=2, autor=self.ent)
+        url = reverse("rutina_guardar", args=[rutina.pk])
+        vacio = {"accion": "publicar", "semanas": [{"dias": [{"ejercicios": []}]}]}
+        r = self.client.post(url, json.dumps(vacio), content_type="application/json")
+        self.assertEqual(r.status_code, 400)
+        self.assertIn("al menos un ejercicio", r.json()["errores"][0])
+
+        datos = estado_simple(self.press.id)
+        datos["accion"] = "publicar"
+        r = self.client.post(url, json.dumps(datos), content_type="application/json")
+        self.assertTrue(r.json()["ok"])
+        rutina.refresh_from_db()
+        self.assertEqual(rutina.estado, EstadoRutina.PUBLICADA)
+        self.assertEqual(rutina.nombre, "Hipertrofia volumen")
+        self.assertEqual(rutina.detalle.count(), 2)
+        self.assertEqual(SerieRutina.objects.count(), 6)
+        self.assertEqual(DiaRutina.objects.get(rutina=rutina, semana=1, dia=1).nombre, "Pecho y tríceps")
+        re = rutina.detalle.first()
+        self.assertEqual(re.texto_resumen(), "3 series × 8–10 reps · 75 kg")
+        r = self.client.get(reverse("rutina_constructor", args=[rutina.pk]))
+        self.assertEqual(r.context["estado_rutina"]["semanas"][0]["dias"][0]["ejercicios"][0]["series"][2]["kg"], "75")
+
+    def test_constructor_valida_series_y_ejercicios(self):
+        rutina = Rutina.objects.create(nombre="H", semanas=1, autor=self.ent)
+        datos = estado_simple(self.press.id, semanas=1)
+        datos["semanas"][0]["dias"][0]["ejercicios"][0]["series"][0] = {"min": 12, "max": 8, "kg": "abc"}
+        r = self.client.post(reverse("rutina_guardar", args=[rutina.pk]), json.dumps(datos),
+                             content_type="application/json")
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(len(r.json()["errores"]), 2)
+        # Un ejercicio inactivo no se puede agregar
+        self.press.activo = False
+        self.press.save()
+        datos = estado_simple(self.press.id, semanas=1)
+        r = self.client.post(reverse("rutina_guardar", args=[rutina.pk]), json.dumps(datos),
+                             content_type="application/json")
+        self.assertEqual(r.status_code, 400)
+
+    def test_solo_el_autor_ve_y_edita(self):
+        otro = crear_entrenador("otro@gmf.co")
+        rutina = Rutina.objects.create(nombre="Ajena", semanas=1, autor=otro)
+        self.assertEqual(self.client.get(reverse("rutina_constructor", args=[rutina.pk])).status_code, 404)
+        r = self.client.post(reverse("rutina_guardar", args=[rutina.pk]), "{}", content_type="application/json")
+        self.assertEqual(r.status_code, 404)
+
+    def test_duplicar_y_eliminar(self):
+        rutina = Rutina.objects.create(nombre="Base", semanas=1, autor=self.ent)
+        self.client.post(reverse("rutina_guardar", args=[rutina.pk]),
+                         json.dumps(estado_simple(self.press.id, 1)), content_type="application/json")
+        self.client.post(reverse("rutina_duplicar", args=[rutina.pk]))
+        copia = Rutina.objects.get(copia_de=rutina)
+        self.assertEqual(copia.detalle.count(), 1)
+        self.assertEqual(SerieRutina.objects.filter(rutina_ejercicio__rutina=copia).count(), 3)
+        self.client.post(reverse("rutina_eliminar", args=[copia.pk]))
+        self.assertFalse(Rutina.objects.filter(pk=copia.pk).exists())
+
+    def test_crear_ejercicio_personalizado(self):
+        url = reverse("ejercicio_nuevo")
+        r = self.client.post(url, {"nombre": "Press banca", "tipo_objetivo": "REPS"}, HTTP_ACCEPT="application/json")
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(set(r.json()["errores"]), {"nombre", "equipo", "musculos"})
+        r = self.client.post(url, {"nombre": "Sentadilla búlgara", "tipo_objetivo": "REPS", "equipo": "Mancuerna",
+                                   "musculos": ["Cuádriceps", "Glúteos"], "video_url": "https://youtu.be/abc"},
+                             HTTP_ACCEPT="application/json")
+        self.assertTrue(r.json()["ok"])
+        ej = Ejercicio.objects.get(nombre="Sentadilla búlgara")
+        self.assertEqual((ej.autor, ej.musculo, ej.maquina), (self.ent, "Cuádriceps, Glúteos", "Mancuerna"))
+        # Otro entrenador no lo ve en su biblioteca
+        self.client.force_login(crear_entrenador("otro@gmf.co"))
+        self.assertNotContains(self.client.get(reverse("ejercicios")), "Cuádriceps, Glúteos")
+
+
+class ClientesEntrenadorTests(TestCase):
+    def setUp(self):
+        self.ent = crear_entrenador()
+        self.client.force_login(self.ent)
+        self.laura = crear_cliente()
+        self.juan = crear_cliente("juan@gmf.co", "Juan")
+        self.press = Ejercicio.objects.create(nombre="Press banca", musculo="Pecho")
+        self.rutina = Rutina.objects.create(nombre="Hipertrofia volumen", semanas=12, dias_por_semana=4,
+                                            autor=self.ent, estado=EstadoRutina.PUBLICADA, objetivo="Hipertrofia")
+        self.otra = Rutina.objects.create(nombre="PPL", semanas=8, dias_por_semana=6, autor=self.ent,
+                                          estado=EstadoRutina.PUBLICADA)
+        hoy = timezone.localdate()
+        self.asig = AsignacionRutina.objects.create(
+            cliente=self.laura, entrenador=self.ent.entrenador, rutina=self.rutina,
+            fecha_inicio=hoy - timedelta(weeks=3), fecha_fin=hoy + timedelta(weeks=9))
+        # Juan tuvo una rutina conmigo, ya terminada: aparece "sin rutina"
+        AsignacionRutina.objects.create(cliente=self.juan, entrenador=self.ent.entrenador, rutina=self.otra,
+                                        fecha_inicio=hoy - timedelta(weeks=10), fecha_fin=hoy - timedelta(weeks=2),
+                                        estado=EstadoAsignacion.FINALIZADA)
+        ProgresoFisico.objects.create(cliente=self.laura, fecha=hoy - timedelta(days=30), peso=Decimal("64.2"))
+        ProgresoFisico.objects.create(cliente=self.laura, fecha=hoy, peso=Decimal("62.4"))
+        for n, (kg, reps) in enumerate([(Decimal("47.5"), 8), (Decimal("45"), 8)], start=1):
+            ProgresoEjercicio.objects.create(cliente=self.laura, asignacion=self.asig, ejercicio=self.press,
+                                             fecha=hoy, numero_serie=n, repeticiones_realizadas=reps, carga_kg=kg)
+        ProgresoEjercicio.objects.create(cliente=self.laura, asignacion=self.asig, ejercicio=self.press,
+                                         fecha=hoy - timedelta(weeks=3), numero_serie=1,
+                                         repeticiones_realizadas=10, carga_kg=Decimal("40"))
+
+    def test_lista_kpis_y_filtros(self):
+        r = self.client.get(reverse("entrenador_clientes"))
+        kpis = r.context["kpis"]
+        self.assertEqual((kpis["activos"], kpis["sin_rutina"], kpis["entrenaron_hoy"], kpis["atencion"]), (1, 1, 1, 1))
+        self.assertContains(r, "Laura Gómez")
+        self.assertContains(r, "62,4 kg")
+        self.assertContains(r, "−1,8 kg")
+        self.assertContains(r, "S4/12")
+        self.assertNotContains(r, "Juan Gómez")
+        r = self.client.get(reverse("entrenador_clientes") + "?filtro=sin_rutina")
+        self.assertContains(r, "Juan Gómez")
+        self.assertContains(r, "Sin rutina")
+
+    def test_detalle_e_historial(self):
+        r = self.client.get(reverse("entrenador_cliente", args=[self.laura.pk]))
+        self.assertEqual(r.status_code, 200)
+        h = r.context["historial"]
+        self.assertEqual((h["mejor"]["kg"], h["mejor"]["reps"]), (Decimal("47.5"), 8))
+        self.assertEqual(h["rm"], Decimal("60.2"))
+        self.assertEqual(h["progreso"], Decimal("7.5"))
+        self.assertContains(r, "Semana 4 de 12")
+        # Un cliente que no es mío: 404
+        ajeno = crear_cliente("x@gmf.co")
+        self.assertEqual(self.client.get(reverse("entrenador_cliente", args=[ajeno.pk])).status_code, 404)
+
+    def test_asignar_reemplaza_y_notifica(self):
+        url = reverse("entrenador_asignar", args=[self.laura.pk])
+        lunes = timezone.localdate() + timedelta(days=7)
+        r = self.client.post(url, {"rutina": self.otra.pk, "fecha_inicio": lunes.isoformat(),
+                                   "semana_inicio": "2", "nota": "Calienta bien", "notificar": "on"})
+        self.assertRedirects(r, reverse("entrenador_cliente", args=[self.laura.pk]))
+        self.asig.refresh_from_db()
+        self.assertEqual(self.asig.estado, EstadoAsignacion.CANCELADA)
+        nueva = self.laura.rutina_actual
+        self.assertEqual((nueva.rutina, nueva.semana_inicio, nueva.nota), (self.otra, 2, "Calienta bien"))
+        self.assertEqual(nueva.fecha_fin, lunes + timedelta(weeks=7) - timedelta(days=1))
+        self.assertTrue(Notificacion.objects.filter(usuario=self.laura.usuario, mensaje__contains="PPL").exists())
+        self.assertEqual(self.laura.progresos_ejercicio.count(), 3)  # el historial se conserva
+
+    def test_asignar_errores_y_solo_publicadas(self):
+        borrador = Rutina.objects.create(nombre="B", semanas=2, autor=self.ent)
+        r = self.client.post(reverse("entrenador_asignar", args=[self.laura.pk]),
+                             {"rutina": borrador.pk, "fecha_inicio": "", "semana_inicio": "1"})
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(set(r.context["errores_asignar"]), {"rutina", "fecha_inicio"})
+        self.assertTrue(r.context["modal_asignar_abierto"])
+
+    def test_editar_cargas_marca_editado(self):
+        serie = ProgresoEjercicio.objects.get(numero_serie=1, carga_kg=Decimal("47.5"))
+        r = self.client.post(reverse("entrenador_cargas", args=[self.laura.pk]),
+                             {f"kg_{serie.id}": "50", f"reps_{serie.id}": "8"})
+        self.assertEqual(r.status_code, 302)
+        serie.refresh_from_db()
+        self.assertEqual(serie.carga_kg, Decimal("50"))
+        self.assertTrue(serie.editado_por_entrenador)
+        self.assertEqual(ProgresoEjercicio.objects.filter(editado_por_entrenador=True).count(), 1)
+
+    def test_registrar_peso(self):
+        self.client.post(reverse("entrenador_peso", args=[self.laura.pk]),
+                         {"peso": "61,9", "fecha": timezone.localdate().isoformat()})
+        self.laura.refresh_from_db()
+        self.assertEqual(self.laura.peso, Decimal("61.9"))
+
+
+class MensajesTests(TestCase):
+    def setUp(self):
+        self.ent = crear_entrenador()
+        self.laura = crear_cliente()
+        self.admin = Usuario.objects.create_user("admin@gmf.co", "x", first_name="Daniel", last_name="Martínez",
+                                                 rol=RolUsuario.ADMINISTRADOR)
+        rutina = Rutina.objects.create(nombre="R", semanas=4, autor=self.ent, estado=EstadoRutina.PUBLICADA)
+        hoy = timezone.localdate()
+        AsignacionRutina.objects.create(cliente=self.laura, entrenador=self.ent.entrenador, rutina=rutina,
+                                        fecha_inicio=hoy, fecha_fin=hoy + timedelta(weeks=4))
+
+    def test_pestanas_clientes_y_equipo(self):
+        self.client.force_login(self.ent)
+        r = self.client.get(reverse("mensajes") + "?pestana=clientes")
+        self.assertContains(r, "Laura Gómez")
+        self.assertNotContains(r, "Daniel Martínez")
+        r = self.client.get(reverse("mensajes") + "?pestana=equipo")
+        self.assertContains(r, "Daniel Martínez")
+        self.assertContains(r, "Administrador")
+        self.assertNotContains(r, "Laura Gómez")
+
+    def test_enviar_leer_y_contador(self):
+        self.client.force_login(self.laura.usuario)
+        r = self.client.post(reverse("conversacion", args=[self.ent.id]), {"texto": "Hola profe"})
+        self.assertRedirects(r, reverse("conversacion", args=[self.ent.id]))
+        self.client.force_login(self.ent)
+        r = self.client.get(reverse("entrenador_resumen"))
+        self.assertContains(r, 'class="contador-lateral"')
+        r = self.client.get(reverse("mensajes"))  # abre la conversación más reciente
+        self.assertRedirects(r, reverse("conversacion", args=[self.laura.usuario.id]))
+        r = self.client.get(reverse("conversacion", args=[self.laura.usuario.id]))
+        self.assertContains(r, "Hola profe")
+        self.assertFalse(Mensaje.objects.filter(leido=False).exists())
+
+    def test_cliente_no_escribe_a_otro_cliente_y_texto_vacio(self):
+        otro = crear_cliente("otro@gmf.co")
+        self.client.force_login(self.laura.usuario)
+        self.client.post(reverse("conversacion", args=[otro.usuario.id]), {"texto": "hola"})
+        self.assertEqual(Mensaje.objects.count(), 0)
+        r = self.client.post(reverse("conversacion", args=[self.ent.id]), {"texto": "   "})
+        self.assertEqual(r.status_code, 400)

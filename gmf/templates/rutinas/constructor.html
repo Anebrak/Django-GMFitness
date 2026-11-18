@@ -1,0 +1,56 @@
+{% extends "entrenador/base_entrenador.html" %}
+{% load static gmf_extras %}
+{# Constructor semana a semana. El tablero lo dibuja constructor.js a partir de "datos-rutina". #}
+
+{% block titulo_pagina %}{{ rutina.nombre }}{% endblock %}
+{% block estilos_pagina %}<link rel="stylesheet" href="{% static 'css/constructor.css' %}">{% endblock %}
+
+{% block pagina %}
+    {% csrf_token %}
+    <!-- ============ Cabecera ============ -->
+    <div class="cabecera-hundida" id="cabecera-constructor">
+        <a class="btn-solo-icono" href="{% url 'rutinas' %}" aria-label="Volver a Mis rutinas"><i class="fa-solid fa-arrow-left"></i></a>
+        <div class="titulo-constructor">
+            <div class="fila-titulo">
+                <label for="nombre-rutina" class="visually-hidden">Nombre de la rutina</label>
+                <input id="nombre-rutina" value="{{ rutina.nombre }}" maxlength="50" autocomplete="off">
+                <span class="etiqueta-borrador" id="etiqueta-estado"{% if rutina.publicada %} hidden{% endif %}>Borrador</span>
+                <span class="etiqueta-publicada" id="etiqueta-publicada"{% if not rutina.publicada %} hidden{% endif %}>Publicada</span>
+            </div>
+            <p id="subtitulo-rutina">
+                <span id="resumen-rutina"></span>{% if rutina.objetivo %} · {{ rutina.objetivo }}{% endif %}
+                · <span id="estado-guardado" class="texto-verde" aria-live="polite">Guardado {{ rutina.fecha_actualizacion|date:"H:i" }}</span>
+            </p>
+        </div>
+        <div class="cabecera-acciones">
+            <button type="button" class="boton-secundario" id="btn-vista-previa" aria-pressed="false"><i class="fa-solid fa-eye"></i> <span>Vista previa</span></button>
+            <button type="button" class="boton-secundario solo-editar" id="btn-guardar-borrador"><i class="fa-solid fa-floppy-disk"></i> Guardar borrador</button>
+            <button type="button" class="boton-primario solo-editar" id="btn-publicar"><i class="fa-solid fa-paper-plane"></i> Publicar rutina</button>
+        </div>
+    </div>
+
+    <div class="caja-errores" id="errores-constructor" role="alert" hidden></div>
+
+    <!-- ============ Barra de semanas ============ -->
+    <div class="barra-semanas">
+        <nav class="grupo-chips" id="chips-semanas" aria-label="Ir a la semana"></nav>
+        <p class="texto-gris consejo-semanas"><i class="fa-solid fa-copy" aria-hidden="true"></i> Duplica una semana y ajusta las cargas para progresar.</p>
+    </div>
+
+    <!-- ============ Tablero ============ -->
+    <div id="tablero" aria-label="Semanas de la rutina"></div>
+
+    {% include "rutinas/_modal_ejercicio.html" with modo_ejercicio="fetch" %}
+
+    {{ estado_rutina|json_script:"datos-rutina" }}
+    {{ catalogo|json_script:"datos-catalogo" }}
+    <div id="config-constructor" hidden
+         data-url-guardar="{% url 'rutina_guardar' rutina.pk %}"
+         data-max-semanas="{{ max_semanas }}" data-max-dias="{{ max_dias }}" data-max-series="{{ max_series }}"
+         data-equipos="Máquina|Mancuerna|Barra|Polea|Peso corporal"></div>
+{% endblock %}
+
+{% block scripts_pagina %}
+    <script src="{% static 'js/ejercicio-nuevo.js' %}"></script>
+    <script src="{% static 'js/constructor.js' %}"></script>
+{% endblock %}

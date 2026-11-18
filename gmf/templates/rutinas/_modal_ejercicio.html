@@ -1,0 +1,72 @@
+{% load gmf_extras %}
+{# Modal "Crear ejercicio nuevo" (Ejercicios y constructor). ejercicio-nuevo.js lo valida en vivo. #}
+{# data-modo="fetch": lo envía constructor.js por JSON y lo inserta en el día; si no, POST normal. #}
+<div class="modal-overlay{% if modal_ejercicio_abierto %} activo{% endif %}" id="modal-ejercicio" aria-hidden="{% if modal_ejercicio_abierto %}false{% else %}true{% endif %}">
+    <div class="modal-caja modal-muy-ancho" role="dialog" aria-modal="true" aria-labelledby="titulo-ejercicio">
+        <button type="button" class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">&times;</button>
+        <div class="modal-cabecera" style="display:block;">
+            <p class="eyebrow">Biblioteca de ejercicios</p>
+            <h2 id="titulo-ejercicio">Crear ejercicio nuevo</h2>
+        </div>
+        <form method="post" action="{% url 'ejercicio_nuevo' %}" id="form-ejercicio" data-modo="{{ modo_ejercicio|default:'normal' }}" novalidate>
+            {% csrf_token %}
+            <div class="ejercicio-columnas">
+                <div>
+                    <div class="grupo-campo{% if errores_ejercicio.nombre %} con-error{% endif %}">
+                        <label class="etiqueta-campo" for="ej-nombre">Nombre del ejercicio <span class="obligatorio" aria-hidden="true">*</span></label>
+                        <div class="input-con-boton">
+                            <input id="ej-nombre" name="nombre" maxlength="{{ max_nombre_ejercicio }}" placeholder="Ej. Sentadilla búlgara" value="{{ valores_ejercicio.nombre }}" autocomplete="off">
+                            <button type="button" id="ej-borrar-nombre" aria-label="Borrar el nombre"><i class="fa-solid fa-circle-xmark"></i></button>
+                        </div>
+                        <p class="error-campo" data-error="nombre">{% for m in errores_ejercicio|dato:"nombre" %}{{ m }}{% endfor %}</p>
+                    </div>
+
+                    <fieldset class="grupo-campo{% if errores_ejercicio.tipo_objetivo %} con-error{% endif %}">
+                        <legend class="etiqueta-campo">Tipo de objetivo <span class="obligatorio" aria-hidden="true">*</span></legend>
+                        <div class="grupo-chips">
+                            {% for valor, texto in tipos_objetivo %}
+                                <label class="chip"><input type="radio" name="tipo_objetivo" value="{{ valor }}"{% if valores_ejercicio.tipo_objetivo == valor or not valores_ejercicio and forloop.first %} checked{% endif %}>{{ texto }}</label>
+                            {% endfor %}
+                        </div>
+                        <p class="ayuda-campo">Reps: series × repeticiones · Tiempo: series × segundos (planchas, cardio…)</p>
+                        <p class="error-campo" data-error="tipo_objetivo">{% for m in errores_ejercicio|dato:"tipo_objetivo" %}{{ m }}{% endfor %}</p>
+                    </fieldset>
+
+                    <fieldset class="grupo-campo{% if errores_ejercicio.equipo %} con-error{% endif %}">
+                        <legend class="etiqueta-campo">Equipo <span class="obligatorio" aria-hidden="true">*</span></legend>
+                        <div class="grupo-chips">
+                            {% for e in equipos %}
+                                <label class="chip chip-chico"><input type="radio" name="equipo" value="{{ e }}"{% if valores_ejercicio.equipo == e %} checked{% endif %}>{{ e }}</label>
+                            {% endfor %}
+                        </div>
+                        <p class="error-campo" data-error="equipo">{% for m in errores_ejercicio|dato:"equipo" %}{{ m }}{% endfor %}</p>
+                    </fieldset>
+                </div>
+
+                <div>
+                    <fieldset class="grupo-campo{% if errores_ejercicio.musculos %} con-error{% endif %}">
+                        <legend class="etiqueta-campo">Grupo muscular <span class="obligatorio" aria-hidden="true">*</span>
+                            <small>elige al menos 1 · <span id="ej-contador-musculos">0</span> seleccionados</small></legend>
+                        <div class="grupo-chips">
+                            {% for m in grupos_musculares %}
+                                <label class="chip chip-chico"><input type="checkbox" name="musculos" value="{{ m }}"{% if m in valores_ejercicio.musculos %} checked{% endif %}>{{ m }}</label>
+                            {% endfor %}
+                        </div>
+                        <p class="error-campo" data-error="musculos">{% for m in errores_ejercicio|dato:"musculos" %}{{ m }}{% endfor %}</p>
+                    </fieldset>
+
+                    <div class="grupo-campo{% if errores_ejercicio.video_url %} con-error{% endif %}">
+                        <label class="etiqueta-campo" for="ej-video">Video de YouTube <small>(opcional)</small></label>
+                        <input id="ej-video" name="video_url" type="url" placeholder="https://youtu.be/..." value="{{ valores_ejercicio.video_url }}">
+                        <p class="error-campo" data-error="video_url">{% for m in errores_ejercicio|dato:"video_url" %}{{ m }}{% endfor %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pie-modal-ejercicio">
+                <button type="submit" class="boton-primario" id="ej-crear" disabled>Crear ejercicio</button>
+                <p id="ej-estado" class="texto-naranja-claro" aria-live="polite"></p>
+            </div>
+        </form>
+    </div>
+</div>

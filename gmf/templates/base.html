@@ -27,6 +27,18 @@
                         <a class="boton-secundario" id="btn-ir-panel" href="{% url 'panel' %}">
                             <i class="fa-solid fa-gauge"></i><span class="texto-boton"> Panel</span>
                         </a>
+                    {% elif user.rol == "ENTRENADOR" %}
+                        <a class="boton-secundario" id="btn-ir-panel" href="{% url 'entrenador_resumen' %}">
+                            <i class="fa-solid fa-gauge"></i><span class="texto-boton"> Mi panel</span>
+                        </a>
+                    {% elif user.rol == "CLIENTE" %}
+                        <a class="boton-secundario" id="btn-ir-panel" href="{% url 'rutinas' %}">
+                            <i class="fa-solid fa-dumbbell"></i><span class="texto-boton"> Mis rutinas</span>
+                        </a>
+                    {% else %}
+                        <a class="boton-secundario" id="btn-ir-panel" href="{% url 'mensajes' %}">
+                            <i class="fa-solid fa-comments"></i><span class="texto-boton"> Mensajes</span>
+                        </a>
                     {% endif %}
                     <div id="saludo-usuario">
                         <span class="usuario-bola" aria-hidden="true">{{ user|iniciales }}</span>

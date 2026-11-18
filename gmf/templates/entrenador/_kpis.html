@@ -1,0 +1,23 @@
+{# Las 4 tarjetas de Mis clientes (también en el Resumen) #}
+<div class="tarjetas-cuatro">
+    <a class="tarjeta-dato" href="{% url 'entrenador_clientes' %}?filtro=activos">
+        <span class="icono-dato"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
+        <span class="valor-dato">{{ kpis.activos }}</span>
+        <span class="nombre-dato">Clientes activos</span>
+    </a>
+    <div class="tarjeta-dato">
+        <span class="icono-dato"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
+        <span class="valor-dato">{{ kpis.entrenaron_hoy }}</span>
+        <span class="nombre-dato">Entrenaron hoy</span>
+    </div>
+    <div class="tarjeta-dato">
+        <span class="icono-dato"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></span>
+        <span class="valor-dato">{% if kpis.adherencia_media is None %}—{% else %}{{ kpis.adherencia_media }} %{% endif %}</span>
+        <span class="nombre-dato">Adherencia media 30 días</span>
+    </div>
+    <a class="tarjeta-dato tarjeta-alerta" href="{% url 'entrenador_clientes' %}?filtro=atencion">
+        <span class="icono-dato"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>
+        <span class="valor-dato">{{ kpis.atencion }}</span>
+        <span class="nombre-dato">Necesitan atención</span>
+    </a>
+</div>

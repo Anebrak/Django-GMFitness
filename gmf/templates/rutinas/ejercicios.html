@@ -1,0 +1,60 @@
+{% extends "entrenador/base_entrenador.html" %}
+{% load static gmf_extras %}
+
+{% block titulo_pagina %}Ejercicios{% endblock %}
+{% block estilos_pagina %}<link rel="stylesheet" href="{% static 'css/rutinas.css' %}">{% endblock %}
+
+{% block pagina %}
+    <div id="encabezado-modulo">
+        <div>
+            <h1 id="titulo-modulo">Ejercicios</h1>
+            <p class="descripcion-modulo">Catálogo del gimnasio y tus ejercicios personalizados ({{ total_propios }}). Los más usados aparecen primero.</p>
+        </div>
+        <button type="button" class="boton-primario" id="btn-nuevo-ejercicio"><i class="fa-solid fa-plus"></i> Crear ejercicio</button>
+    </div>
+
+    <form class="barra-filtros" method="get" role="search">
+        <div class="grupo-chips" aria-label="Filtrar por equipo">
+            <a class="chip chip-chico{% if not equipo and not propios %} activo{% endif %}" href="?q={{ q|urlencode }}">Todos</a>
+            <a class="chip chip-chico{% if propios %} activo{% endif %}" href="?propios=1&q={{ q|urlencode }}">Míos</a>
+            {% for e in equipos %}
+                <a class="chip chip-chico{% if equipo == e %} activo{% endif %}" href="?equipo={{ e|urlencode }}&q={{ q|urlencode }}">{{ e }}</a>
+            {% endfor %}
+        </div>
+        {% if equipo %}<input type="hidden" name="equipo" value="{{ equipo }}">{% endif %}
+        {% if propios %}<input type="hidden" name="propios" value="1">{% endif %}
+        <div id="caja-buscar">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="buscar" name="q" value="{{ q }}" placeholder="Buscar por nombre o músculo" aria-label="Buscar ejercicio">
+        </div>
+    </form>
+
+    <div id="tabla-contenedor">
+        <table id="tabla">
+            <thead><tr><th scope="col">Ejercicio</th><th scope="col">Grupo muscular</th><th scope="col">Equipo</th><th scope="col">Tipo</th><th scope="col" class="numero">Usos</th></tr></thead>
+            <tbody>
+                {% for e in ejercicios %}
+                    <tr>
+                        <td>
+                            {{ e.nombre }}
+                            {% if e.autor_id %}<span class="etiqueta-tu">Mío</span>{% endif %}
+                            {% if e.video_url %}<a href="{{ e.video_url }}" target="_blank" rel="noopener" aria-label="Video de {{ e.nombre }} (se abre en otra pestaña)"><i class="fa-brands fa-youtube"></i></a>{% endif %}
+                        </td>
+                        <td class="celda-texto">{{ e.musculo }}</td>
+                        <td>{{ e.maquina|default:"—" }}</td>
+                        <td>{{ e.get_tipo_objetivo_display }}</td>
+                        <td class="numero">{{ e.usos }} {% if e.usos == 1 %}vez{% else %}veces{% endif %}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="sin-resultados"><i class="fa-solid fa-dumbbell" aria-hidden="true"></i>No hay ejercicios que coincidan.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include "rutinas/_modal_ejercicio.html" %}
+{% endblock %}
+
+{% block scripts_pagina %}
+    <script src="{% static 'js/ejercicio-nuevo.js' %}"></script>
+{% endblock %}

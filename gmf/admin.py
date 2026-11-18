@@ -7,6 +7,7 @@ from .models import (
     Disponibilidad, Ejercicio, Entrenador, Factura, Fisioterapeuta, MedidaCorporal, Mensaje,
     Membresia, MetaNutricional, Notificacion, Nutricionista, Objetivo, Pago, ProgresoEjercicio,
     ProgresoFisico, RegistroComida, Rutina, RutinaEjercicio, Sede, Suscripcion, Usuario,
+    DiaRutina, SerieRutina,
 )
 
 # Busqueda reutilizable para los modelos que cuelgan de un Usuario
@@ -252,10 +253,10 @@ class MedidaCorporalAdmin(admin.ModelAdmin):
 @admin.register(ProgresoEjercicio)
 class ProgresoEjercicioAdmin(admin.ModelAdmin):
     list_display = [
-        "cliente", "ejercicio", "fecha", "series_realizadas",
-        "repeticiones_realizadas", "carga_kg", "volumen",
+        "cliente", "ejercicio", "fecha", "numero_serie", "series_realizadas",
+        "repeticiones_realizadas", "carga_kg", "volumen", "editado_por_entrenador",
     ]
-    list_filter = ["fecha", "ejercicio__musculo"]
+    list_filter = ["fecha", "editado_por_entrenador", "ejercicio__musculo"]
     search_fields = BUSCAR_CLIENTE + ["ejercicio__nombre"]
     autocomplete_fields = ["cliente", "asignacion", "ejercicio"]
     date_hierarchy = "fecha"
@@ -271,9 +272,10 @@ class ProgresoEjercicioAdmin(admin.ModelAdmin):
 
 @admin.register(Ejercicio)
 class EjercicioAdmin(admin.ModelAdmin):
-    list_display = ["nombre", "musculo", "maquina", "activo"]
-    list_filter = ["activo", "musculo"]
+    list_display = ["nombre", "musculo", "maquina", "tipo_objetivo", "autor", "activo"]
+    list_filter = ["activo", "tipo_objetivo", "maquina"]
     search_fields = ["nombre", "musculo", "maquina"]
+    autocomplete_fields = ["autor"]
 
 
 class RutinaEjercicioInline(admin.TabularInline):
@@ -286,18 +288,40 @@ class RutinaEjercicioInline(admin.TabularInline):
     ]
 
 
+class DiaRutinaInline(admin.TabularInline):
+    model = DiaRutina
+    extra = 0
+    fields = ["semana", "dia", "nombre"]
+
+
 @admin.register(Rutina)
 class RutinaAdmin(admin.ModelAdmin):
-    list_display = ["nombre", "autor", "nivel", "semanas", "visibilidad", "copia_de"]
-    list_filter = ["visibilidad", "nivel", "autor__rol"]
+    list_display = ["nombre", "autor", "estado", "nivel", "semanas", "dias_por_semana", "visibilidad", "copia_de"]
+    list_filter = ["estado", "visibilidad", "nivel", "autor__rol"]
     search_fields = ["nombre", "objetivo", "autor__email", "autor__first_name", "autor__last_name"]
     autocomplete_fields = ["autor", "copia_de"]
-    inlines = [RutinaEjercicioInline]
+    inlines = [DiaRutinaInline, RutinaEjercicioInline]
+
+
+class SerieRutinaInline(admin.TabularInline):
+    model = SerieRutina
+    extra = 0
+    fields = ["numero", "repeticiones_min", "repeticiones_max", "carga_kg", "descanso_segundos"]
+
+
+@admin.register(RutinaEjercicio)
+class RutinaEjercicioAdmin(admin.ModelAdmin):
+    """Para ver y corregir las series de un ejercicio de la rutina."""
+    list_display = ["rutina", "semana", "dia", "orden", "ejercicio", "series"]
+    list_filter = ["rutina"]
+    search_fields = ["rutina__nombre", "ejercicio__nombre"]
+    autocomplete_fields = ["rutina", "ejercicio"]
+    inlines = [SerieRutinaInline]
 
 
 @admin.register(AsignacionRutina)
 class AsignacionRutinaAdmin(admin.ModelAdmin):
-    list_display = ["rutina", "cliente", "entrenador", "fecha_inicio", "fecha_fin", "estado"]
+    list_display = ["rutina", "cliente", "entrenador", "fecha_inicio", "fecha_fin", "semana_inicio", "estado"]
     list_filter = ["estado", "entrenador"]
     list_editable = ["estado"]
     search_fields = BUSCAR_CLIENTE + ["rutina__nombre"]

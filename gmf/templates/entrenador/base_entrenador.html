@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static gmf_extras %}
+{# Base de las pantallas del entrenador (y de las compartidas: rutinas, ejercicios y mensajes). #}
+{# La barra lateral cambia según el rol: el entrenador ve todo; el cliente, sus rutinas y mensajes. #}
+
+{% block titulo %}{% block titulo_pagina %}Panel{% endblock %} | GMFitness{% endblock %}
+{% block estilos %}
+    <link rel="stylesheet" href="{% static 'css/panel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/entrenador.css' %}">
+    {% block estilos_pagina %}{% endblock %}
+{% endblock %}
+
+{% block contenido %}
+    {% mensajes_no_leidos user as no_leidos_total %}
+    <aside id="barra-lateral" class="expandida" aria-label="Secciones">
+        <button type="button" id="btn-toggle" class="item-lateral" aria-expanded="true" aria-controls="barra-lateral">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menú</span>
+        </button>
+
+        {% if user.rol == "ENTRENADOR" %}
+            <a class="item-lateral{% if seccion == 'resumen' %} activo{% endif %}" href="{% url 'entrenador_resumen' %}" title="Resumen"{% if seccion == 'resumen' %} aria-current="page"{% endif %}>
+                <i class="fa-solid fa-chart-pie"></i><span>Resumen</span>
+            </a>
+        {% endif %}
+
+        {% if user.rol == "ENTRENADOR" or user.rol == "CLIENTE" %}
+            <p class="titulo-grupo"><span>Entrenamiento</span></p>
+            <a class="item-lateral{% if seccion == 'rutinas' %} activo{% endif %}" href="{% url 'rutinas' %}" title="Mis rutinas"{% if seccion == 'rutinas' %} aria-current="page"{% endif %}>
+                <i class="fa-solid fa-list"></i><span>Mis rutinas</span>
+            </a>
+            <a class="item-lateral{% if seccion == 'ejercicios' %} activo{% endif %}" href="{% url 'ejercicios' %}" title="Ejercicios"{% if seccion == 'ejercicios' %} aria-current="page"{% endif %}>
+                <i class="fa-solid fa-dumbbell"></i><span>Ejercicios</span>
+            </a>
+        {% endif %}
+
+        <p class="titulo-grupo"><span>Personas</span></p>
+        {% if user.rol == "ENTRENADOR" %}
+            <a class="item-lateral{% if seccion == 'clientes' %} activo{% endif %}" href="{% url 'entrenador_clientes' %}" title="Mis clientes"{% if seccion == 'clientes' %} aria-current="page"{% endif %}>
+                <i class="fa-solid fa-users"></i><span>Mis clientes</span>
+            </a>
+        {% endif %}
+        <a class="item-lateral{% if seccion == 'mensajes' %} activo{% endif %}" href="{% url 'mensajes' %}" title="Mensajes{% if no_leidos_total %} ({{ no_leidos_total }} sin leer){% endif %}"{% if seccion == 'mensajes' %} aria-current="page"{% endif %}>
+            <i class="fa-solid fa-comments"></i><span>Mensajes</span>
+            {% if no_leidos_total %}<b class="contador-lateral" aria-label="{{ no_leidos_total }} sin leer">{{ no_leidos_total }}</b>{% endif %}
+        </a>
+        {% if user.rol == "ADMINISTRADOR" %}
+            <a class="item-lateral" href="{% url 'panel' %}" title="Panel de administración">
+                <i class="fa-solid fa-gauge"></i><span>Panel</span>
+            </a>
+        {% endif %}
+
+        <a class="item-lateral item-abajo" href="{% url 'inicio' %}" title="Ver el sitio">
+            <i class="fa-solid fa-house"></i><span>Ver el sitio</span>
+        </a>
+    </aside>
+    <script>
+        // Recordar si la barra estaba contraída (antes de dibujar, para que no "salte")
+        try {
+            if (window.innerWidth <= 768 || localStorage.getItem("gmf-barra") === "contraida") {
+                document.getElementById("barra-lateral").classList.remove("expandida");
+            }
+        } catch (e) { /* sin almacenamiento: queda abierta */ }
+    </script>
+
+    <section id="contenido"{% block clase_contenido %}{% endblock %}>
+        {% block pagina %}{% endblock %}
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {# panel.js: barra lateral y abrir/cerrar modales (abrirModal / cerrarModal) #}
+    <script src="{% static 'js/panel.js' %}"></script>
+    {% block scripts_pagina %}{% endblock %}
+{% endblock %}

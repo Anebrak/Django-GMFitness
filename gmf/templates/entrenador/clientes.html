@@ -1,0 +1,119 @@
+{% extends "entrenador/base_entrenador.html" %}
+{% load static gmf_extras %}
+
+{% block titulo_pagina %}Mis clientes{% endblock %}
+
+{% block pagina %}
+    <div id="encabezado-modulo">
+        <div>
+            <h1 id="titulo-modulo">Mis clientes</h1>
+            <p class="descripcion-modulo">{{ kpis.activos }} activo{{ kpis.activos|pluralize }} · {{ kpis.sin_rutina }} sin rutina · {{ kpis.inactivos }} inactivo{{ kpis.inactivos|pluralize }}</p>
+        </div>
+    </div>
+
+    {% include "entrenador/_kpis.html" %}
+
+    <form class="barra-filtros" method="get" role="search">
+        <div class="grupo-chips" aria-label="Filtrar clientes">
+            {% for valor, texto in filtros %}
+                <a class="chip{% if filtro == valor %} activo{% endif %}" href="?filtro={{ valor }}{% if q %}&q={{ q|urlencode }}{% endif %}"{% if filtro == valor %} aria-current="true"{% endif %}>{{ texto }}</a>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="filtro" value="{{ filtro }}">
+        <div id="caja-buscar">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="buscar" name="q" value="{{ q }}" placeholder="Buscar por nombre o correo" aria-label="Buscar cliente">
+        </div>
+    </form>
+
+    <div id="tabla-contenedor">
+        <table id="tabla">
+            <thead>
+                <tr>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Peso actual</th>
+                    <th scope="col">Rutina asignada</th>
+                    <th scope="col">Adherencia</th>
+                    <th scope="col">Última sesión</th>
+                    <th scope="col"><span class="visually-hidden">Acciones</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in pagina %}
+                    <tr{% if not f.activo %} class="fila-inactiva"{% endif %}>
+                        <td>
+                            <div class="celda-persona">
+                                <span class="usuario-bola" aria-hidden="true">{{ f.usuario|iniciales }}</span>
+                                <div>
+                                    <a class="enlace-persona" href="{% url 'entrenador_cliente' f.cliente.pk %}">{{ f.usuario.get_full_name|default:f.usuario.email }}</a>
+                                    <small>{{ f.objetivo|default:f.usuario.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if f.cliente.peso %}{{ f.cliente.peso|kg }} kg{% else %}<span class="texto-gris">—</span>{% endif %}
+                            {% if f.variacion is not None %}
+                                <small class="variacion {% if f.variacion < 0 %}baja{% elif f.variacion > 0 %}sube{% endif %}">
+                                    {% if f.variacion < 0 %}▼{% elif f.variacion > 0 %}▲{% endif %} {{ f.variacion|con_signo }} kg · 4 sem
+                                </small>
+                            {% endif %}
+                        </td>
+                        <td class="celda-rutina">
+                            {% if f.asignacion %}
+                                {{ f.asignacion.rutina.nombre }}
+                                <span class="barra-progreso" role="progressbar" aria-valuenow="{{ f.progreso_pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="Avance de la rutina"><span style="width: {{ f.progreso_pct }}%"></span></span>
+                                <small>S{{ f.semana }}/{{ f.asignacion.rutina.semanas }}</small>
+                            {% else %}
+                                <span class="etiqueta-sin-rutina">Sin rutina</span>
+                            {% endif %}
+                        </td>
+                        <td>{% if f.adherencia is None %}<span class="texto-gris">—</span>{% else %}{{ f.adherencia }} %{% endif %}</td>
+                        <td>{{ f.texto_ultima }}</td>
+                        <td class="col-acciones">
+                            <div class="acciones">
+                                {% if f.activo %}
+                                    <button type="button"
+                                            class="{% if f.asignacion %}boton-naranja-suave{% else %}boton-primario{% endif %} boton-chico"
+                                            data-asignar data-url="{% url 'entrenador_asignar' f.cliente.pk %}"
+                                            data-nombre="{{ f.usuario.get_full_name|default:f.usuario.email }}"
+                                            data-nombre-corto="{{ f.usuario.first_name|default:f.usuario.email }}"
+                                            data-iniciales="{{ f.usuario|iniciales }}"
+                                            {% if f.asignacion %}data-actual="{{ f.asignacion.rutina_id }}" data-actual-texto="«{{ f.asignacion.rutina.nombre }}» (semana {{ f.semana }} de {{ f.asignacion.rutina.semanas }})"{% endif %}>
+                                        {% if f.asignacion %}Cambiar rutina{% else %}Asignar rutina{% endif %}
+                                    </button>
+                                {% endif %}
+                                <a class="boton-secundario boton-chico" href="{% url 'entrenador_cliente' f.cliente.pk %}">Ver detalle</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="sin-resultados">
+                            <i class="fa-solid fa-users" aria-hidden="true"></i>
+                            {% if q %}No hay clientes que coincidan con «{{ q }}».{% else %}No hay clientes en este filtro. Cuando asignes una rutina a un cliente, aparecerá aquí.{% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if pagina.paginator.num_pages > 1 %}
+        <div id="pie-tabla">
+            <span id="info-registros">{{ pagina.start_index }}–{{ pagina.end_index }} de {{ pagina.paginator.count }}</span>
+            <nav id="paginacion" aria-label="Páginas">
+                {% for n in pagina.paginator.page_range %}
+                    {% if n == pagina.number %}
+                        <span class="btn-pagina activo" aria-current="page">{{ n }}</span>
+                    {% else %}
+                        <a class="btn-pagina" href="?filtro={{ filtro }}&q={{ q|urlencode }}&pagina={{ n }}">{{ n }}</a>
+                    {% endif %}
+                {% endfor %}
+            </nav>
+        </div>
+    {% endif %}
+
+    {% include "entrenador/_modal_asignar.html" %}
+{% endblock %}
+
+{% block scripts_pagina %}<script src="{% static 'js/entrenador.js' %}"></script>{% endblock %}

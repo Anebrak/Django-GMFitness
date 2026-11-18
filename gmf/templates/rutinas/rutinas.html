@@ -1,0 +1,168 @@
+{% extends "entrenador/base_entrenador.html" %}
+{% load static gmf_extras %}
+
+{% block titulo_pagina %}Mis rutinas{% endblock %}
+{% block estilos_pagina %}<link rel="stylesheet" href="{% static 'css/rutinas.css' %}">{% endblock %}
+
+{% block pagina %}
+    <div id="encabezado-modulo">
+        <div>
+            <h1 id="titulo-modulo">Mis rutinas</h1>
+            <p class="descripcion-modulo">{{ total_propias }} propia{{ total_propias|pluralize }} · {{ total_guardadas }} guardada{{ total_guardadas|pluralize }}</p>
+        </div>
+    </div>
+
+    <!-- ============ Tarjeta destacada ============ -->
+    <section class="panel-caja tarjeta-creador">
+        <span class="icono-dato" aria-hidden="true"><i class="fa-solid fa-dumbbell"></i></span>
+        <div>
+            <p class="eyebrow">Creador de rutinas</p>
+            <h2>Diseña tu próxima rutina</h2>
+            <p class="texto-gris">Crea entrenamientos semana a semana: elige ejercicios, series, repeticiones y cargas, y duplica semanas para progresar más rápido.</p>
+        </div>
+        <button type="button" class="boton-primario boton-grande" id="btn-crear-rutina"><i class="fa-solid fa-plus"></i> Crear rutina</button>
+    </section>
+
+    <!-- ============ Tus rutinas ============ -->
+    <h2 class="titulo-seccion">Tus rutinas ({{ rutinas|length }})</h2>
+    <form class="barra-filtros" method="get" role="search">
+        <div class="grupo-chips" aria-label="Filtrar rutinas">
+            {% for valor, texto in filtros %}
+                <a class="chip{% if filtro == valor %} activo{% endif %}" href="?filtro={{ valor }}{% if q %}&q={{ q|urlencode }}{% endif %}"{% if filtro == valor %} aria-current="true"{% endif %}>{{ texto }}</a>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="filtro" value="{{ filtro }}">
+        <div id="caja-buscar">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="buscar" name="q" value="{{ q }}" placeholder="Buscar por nombre" aria-label="Buscar rutina">
+        </div>
+    </form>
+
+    {% if rutinas %}
+        <div class="rejilla-rutinas">
+            {% for r in rutinas %}
+                <article class="tarjeta-rutina">
+                    <a class="cuerpo-rutina" href="{% url 'rutina_constructor' r.pk %}">
+                        <h3>{{ r.nombre }} {% if r.estado == "BORRADOR" %}<span class="etiqueta-borrador">Borrador</span>{% endif %}</h3>
+                        <p>{{ r.descripcion|default:r.objetivo|default:"Sin descripción"|truncatechars:110 }}</p>
+                    </a>
+                    <footer class="pie-rutina">
+                        <span>{{ r.semanas }} semana{{ r.semanas|pluralize }} · {{ r.dias_por_semana }} días/sem{% if r.num_ejercicios %} · {{ r.num_ejercicios }} ejerc.{% endif %}</span>
+                        <div class="menu-opciones">
+                            <button type="button" class="btn-solo-icono" aria-label="Opciones de {{ r.nombre }}" aria-haspopup="true" aria-expanded="false" data-menu>
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                            <div class="menu-desplegable" role="menu" hidden>
+                                <a role="menuitem" href="{% url 'rutina_constructor' r.pk %}"><i class="fa-solid fa-pen"></i> Editar</a>
+                                <form method="post" action="{% url 'rutina_duplicar' r.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" role="menuitem"><i class="fa-solid fa-copy"></i> Duplicar</button>
+                                </form>
+                                {% if r.num_asignaciones %}
+                                    <span class="menu-deshabilitado" title="Ya se asignó a clientes"><i class="fa-solid fa-lock"></i> Asignada: no se elimina</span>
+                                {% else %}
+                                    <button type="button" role="menuitem" class="opcion-peligro" data-eliminar="{% url 'rutina_eliminar' r.pk %}" data-nombre="{{ r.nombre }}"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </footer>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="panel-caja vacio-rutinas">
+            <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
+            <p>{% if q or filtro %}No hay rutinas en este filtro.{% else %}Todavía no has creado rutinas.{% endif %}</p>
+        </div>
+    {% endif %}
+
+    <!-- ============ Modal: Nueva rutina (paso 1 de 2) ============ -->
+    <div class="modal-overlay{% if modal_abierto %} activo{% endif %}" id="modal-rutina" aria-hidden="{% if modal_abierto %}false{% else %}true{% endif %}">
+        <div class="modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="titulo-rutina">
+            <button type="button" class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">&times;</button>
+            <p class="eyebrow" style="color: var(--gris-inactivo);">Paso 1 de 2 · Información básica</p>
+            <h2 id="titulo-rutina">Nueva rutina</h2>
+            <div class="pasos" aria-hidden="true"><span class="activo"></span><span></span></div>
+
+            <form method="post" id="form-rutina" novalidate>
+                {% csrf_token %}
+                <div class="grupo-campo{% if errores.nombre %} con-error{% endif %}">
+                    <label for="rutina-nombre">Nombre de la rutina <span class="obligatorio" aria-hidden="true">*</span></label>
+                    <input id="rutina-nombre" name="nombre" maxlength="50" required value="{{ valores.nombre }}" placeholder="Ej. Hipertrofia volumen" autocomplete="off">
+                    <p class="ayuda-campo" style="text-align:right;"><span id="contador-nombre">{{ valores.nombre|length }}</span> / 50</p>
+                    {% for m in errores|dato:"nombre" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                </div>
+
+                <div class="grupo-campo{% if errores.semanas %} con-error{% endif %}" style="margin-top:.5rem;">
+                    <label for="rutina-semanas">Duración <span class="obligatorio" aria-hidden="true">*</span></label>
+                    <select id="rutina-semanas" name="semanas" required>
+                        <option value="">Elige las semanas</option>
+                        {% for n in opciones_semanas %}<option value="{{ n }}"{% if valores.semanas == n|stringformat:"s" %} selected{% endif %}>{{ n }} semana{{ n|pluralize }}</option>{% endfor %}
+                    </select>
+                    {% for m in errores|dato:"semanas" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                </div>
+
+                <fieldset class="grupo-campo{% if errores.dias_por_semana %} con-error{% endif %}" style="margin-top:1rem;">
+                    <legend class="etiqueta-campo" style="text-transform:none;font-size:.95rem;">Días de entrenamiento por semana</legend>
+                    <div class="selector-dias">
+                        {% for n in opciones_dias %}
+                            <label class="chip"><input type="radio" name="dias_por_semana" value="{{ n }}"{% if valores.dias_por_semana == n|stringformat:"s" %} checked{% endif %}>{{ n }}</label>
+                        {% endfor %}
+                    </div>
+                    {% for m in errores|dato:"dias_por_semana" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                </fieldset>
+
+                <fieldset class="grupo-campo" style="margin-top:1rem;">
+                    <legend class="etiqueta-campo" style="text-transform:none;font-size:.95rem;">Objetivo</legend>
+                    <div class="grupo-chips">
+                        {% for o in objetivos %}
+                            <label class="chip"><input type="radio" name="objetivo" value="{{ o }}"{% if valores.objetivo == o %} checked{% endif %}>{{ o }}</label>
+                        {% endfor %}
+                    </div>
+                    {% for m in errores|dato:"objetivo" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                </fieldset>
+
+                <details class="avanzado"{% if errores.nivel or errores.descripcion or valores.descripcion or valores.nivel %} open{% endif %}>
+                    <summary>Configuración avanzada</summary>
+                    <div class="grupo-campo{% if errores.nivel %} con-error{% endif %}">
+                        <label for="rutina-nivel">Nivel</label>
+                        <select id="rutina-nivel" name="nivel">
+                            <option value="">Sin indicar</option>
+                            {% for v, t in niveles %}<option value="{{ v }}"{% if valores.nivel == v %} selected{% endif %}>{{ t }}</option>{% endfor %}
+                        </select>
+                        {% for m in errores|dato:"nivel" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                    </div>
+                    <div class="grupo-campo{% if errores.descripcion %} con-error{% endif %}" style="margin-top:1rem;">
+                        <label for="rutina-descripcion">Descripción</label>
+                        <textarea id="rutina-descripcion" name="descripcion" rows="3" maxlength="1000" placeholder="¿Para quién es esta rutina? ¿Qué busca?">{{ valores.descripcion }}</textarea>
+                        {% for m in errores|dato:"descripcion" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                    </div>
+                </details>
+
+                <div class="modal-botones">
+                    <button type="button" class="boton-secundario" data-cerrar-modal>Cancelar</button>
+                    <button type="submit" class="boton-primario" id="btn-siguiente">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ Modal: confirmar eliminar ============ -->
+    <div class="modal-overlay" id="modal-eliminar" aria-hidden="true">
+        <div class="modal-caja modal-pequeno" role="dialog" aria-modal="true" aria-labelledby="titulo-eliminar">
+            <button type="button" class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">&times;</button>
+            <div class="icono-alerta"><i class="fa-solid fa-trash"></i></div>
+            <h2 id="titulo-eliminar">Eliminar rutina</h2>
+            <p>Se eliminará «<span id="nombre-eliminar"></span>» con todos sus días y ejercicios. No se puede deshacer.</p>
+            <form method="post" id="form-eliminar">
+                {% csrf_token %}
+                <div class="modal-botones">
+                    <button type="button" class="boton-secundario" data-cerrar-modal>Cancelar</button>
+                    <button type="submit" class="boton-primario boton-peligro">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts_pagina %}<script src="{% static 'js/rutinas.js' %}"></script>{% endblock %}

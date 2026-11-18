@@ -1,0 +1,325 @@
+/* =========================================================
+   GMFitness - Mensajes
+   Lista de conversaciones (1/3) + chat (2/3). En celular se ve una cosa a la vez.
+   ========================================================= */
+
+#bandeja {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr);
+  gap: 1.25rem;
+  height: calc(100vh - 260px);
+  min-height: 480px;
+}
+
+#lista-conversaciones,
+#chat {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  overflow: hidden;
+}
+
+#lista-conversaciones {
+  padding: 1rem;
+  gap: 0.85rem;
+}
+
+#lista-conversaciones .selector-segmentado {
+  display: flex;
+}
+
+#lista-conversaciones #caja-buscar {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+.filas-conversacion {
+  list-style: none;
+  margin: 0 -0.5rem;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.fila-conversacion {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 64px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  color: var(--blanco-primario);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.fila-conversacion:hover {
+  background-color: var(--azul-500);
+  color: var(--blanco-primario);
+}
+
+.fila-conversacion.abierta {
+  background-color: var(--azul-fondo-iconos);
+  box-shadow: inset 4px 0 0 var(--naranja);
+}
+
+.usuario-bola.bola-equipo {
+  background-color: var(--azul-500);
+  color: var(--naranja-200);
+}
+
+.fila-conversacion .usuario-bola {
+  flex-shrink: 0;
+}
+
+.fila-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.fila-nombre {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.fila-nombre strong {
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.fila-nombre .etiqueta-rol {
+  padding: 0 8px;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.fila-vista {
+  display: block;
+  color: var(--gris-inactivo);
+  font-size: 0.88rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sin-leer .fila-vista {
+  color: var(--blanco-primario);
+  font-weight: 700;
+}
+
+.fila-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--gris-inactivo);
+  white-space: nowrap;
+}
+
+.contador-fila {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background-color: var(--naranja);
+  color: var(--negro);
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+.vacio-lista {
+  padding: 1.5rem 0.75rem;
+  color: var(--gris-inactivo);
+  text-align: center;
+}
+
+/* Chat */
+#chat-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--azul-800);
+  border-bottom: 1px solid var(--azul-fondo-iconos);
+}
+
+#chat-cabecera div {
+  flex: 1;
+  min-width: 0;
+}
+
+#chat-cabecera strong {
+  margin-right: 0.4rem;
+}
+
+#chat-cabecera .etiqueta-rol {
+  font-size: 0.72rem;
+  padding: 0 8px;
+}
+
+#chat-cabecera small {
+  display: block;
+  color: var(--gris-inactivo);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#chat-mensajes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  background-color: var(--azul-oscuro);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.separador-dia {
+  text-align: center;
+  margin: 0.75rem 0;
+}
+
+.separador-dia span {
+  padding: 3px 12px;
+  border-radius: 999px;
+  background-color: var(--azul-secundario);
+  color: var(--gris-inactivo);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.burbuja {
+  max-width: min(75%, 520px);
+  padding: 0.6rem 0.9rem 0.4rem;
+  border-radius: 16px;
+}
+
+.burbuja p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.burbuja time {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  text-align: right;
+  opacity: 0.75;
+}
+
+.burbuja.mia {
+  align-self: flex-end;
+  background-color: var(--naranja);
+  color: var(--negro);
+  border-bottom-right-radius: 4px;
+}
+
+.burbuja.otra {
+  align-self: flex-start;
+  background-color: var(--azul-fondo-iconos);
+  color: var(--blanco-primario);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-vacio {
+  margin: auto;
+  text-align: center;
+  color: var(--gris-inactivo);
+}
+
+.chat-vacio i {
+  display: block;
+  font-size: 2.2rem;
+  margin-bottom: 0.6rem;
+  color: var(--gris-bordes);
+}
+
+.chat-vacio.grande {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+#form-mensaje {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  padding: 1rem;
+  border-top: 1px solid var(--azul-fondo-iconos);
+}
+
+#form-mensaje textarea {
+  flex: 1;
+  min-height: 46px;
+  max-height: 160px;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--azul-fondo-iconos);
+  background-color: var(--azul-oscuro);
+  color: var(--blanco-primario);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: none;
+  outline: none;
+}
+
+#form-mensaje textarea:focus {
+  border-color: var(--naranja);
+}
+
+#form-mensaje .boton-primario {
+  min-height: 46px;
+}
+
+.chat-bloqueado {
+  margin: 0;
+  padding: 1rem;
+  color: var(--gris-inactivo);
+  text-align: center;
+  border-top: 1px solid var(--azul-fondo-iconos);
+}
+
+.solo-celular {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  #bandeja {
+    grid-template-columns: 1fr;
+    height: calc(100vh - 220px);
+  }
+
+  #bandeja.con-chat #lista-conversaciones,
+  #bandeja.sin-chat #chat {
+    display: none;
+  }
+
+  .solo-celular {
+    display: grid;
+  }
+
+  .burbuja {
+    max-width: 88%;
+  }
+
+  #chat-cabecera {
+    padding: 0.75rem;
+    gap: 0.6rem;
+  }
+
+  #chat-cabecera .boton-chico {
+    padding: 0 0.7rem;
+    font-size: 0.8rem;
+  }
+}

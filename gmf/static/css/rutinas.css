@@ -1,0 +1,224 @@
+/* =========================================================
+   GMFitness - Mis rutinas y Ejercicios
+   (chips, etiquetas y modales compartidos están en entrenador.css)
+   ========================================================= */
+
+.tarjeta-creador {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  border-color: var(--borde-naranja);
+}
+
+.tarjeta-creador > div {
+  flex: 1 1 320px;
+}
+
+.tarjeta-creador h2 {
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  margin: 0 0 0.35rem !important;
+}
+
+.tarjeta-creador p:last-child {
+  margin: 0;
+}
+
+.titulo-seccion {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+
+.rejilla-rutinas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.tarjeta-rutina {
+  display: flex;
+  flex-direction: column;
+  min-height: 196px;
+  border-radius: 18px;
+  background-color: var(--azul-secundario);
+  border: 1px solid var(--azul-fondo-iconos);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tarjeta-rutina:hover {
+  border-color: var(--borde-naranja);
+  transform: translateY(-2px);
+}
+
+.cuerpo-rutina {
+  flex: 1;
+  padding: 1.25rem;
+  color: var(--blanco-primario);
+  text-decoration: none;
+}
+
+.cuerpo-rutina:hover {
+  color: var(--blanco-primario);
+}
+
+.cuerpo-rutina h3 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cuerpo-rutina p {
+  margin: 0;
+  color: var(--gris-inactivo);
+}
+
+.pie-rutina {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+  border-radius: 0 0 18px 18px;
+  background-color: var(--azul-800);
+  color: var(--azul-100);
+  font-size: 0.9rem;
+}
+
+.pie-rutina .btn-solo-icono {
+  border-color: transparent;
+}
+
+.menu-opciones {
+  position: relative;
+}
+
+.menu-desplegable {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  min-width: 210px;
+  padding: 0.4rem;
+  border-radius: 12px;
+  background-color: var(--azul-fondo-iconos);
+  border: 1px solid var(--gris-bordes);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  z-index: 50;
+}
+
+.menu-desplegable form {
+  margin: 0;
+}
+
+.menu-desplegable a,
+.menu-desplegable button,
+.menu-deshabilitado {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0.85rem;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--blanco-primario);
+  font-size: 0.95rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menu-desplegable a:hover,
+.menu-desplegable button:hover {
+  background-color: var(--azul-500);
+  color: var(--blanco-primario);
+}
+
+.menu-desplegable .opcion-peligro {
+  color: #ff8b8e;
+}
+
+.menu-deshabilitado {
+  color: var(--gris-inactivo);
+  cursor: default;
+  font-size: 0.85rem;
+}
+
+.vacio-rutinas {
+  text-align: center;
+  color: var(--gris-inactivo);
+  padding: 3rem 1rem;
+}
+
+.vacio-rutinas i {
+  font-size: 2.4rem;
+  color: var(--gris-bordes);
+  margin-bottom: 0.75rem;
+}
+
+/* Modal "Nueva rutina" */
+.pasos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin: -0.5rem 0 1.5rem;
+}
+
+.pasos span {
+  height: 6px;
+  border-radius: 999px;
+  background-color: var(--azul-fondo-iconos);
+}
+
+.pasos span.activo {
+  background-color: var(--naranja);
+}
+
+.selector-dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.selector-dias .chip {
+  padding: 0;
+  border-radius: 12px;
+}
+
+.selector-dias .chip:has(input:checked) {
+  background-color: var(--naranja);
+  border-color: var(--naranja);
+  color: var(--negro);
+}
+
+fieldset.grupo-campo {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.avanzado {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--azul-fondo-iconos);
+}
+
+.avanzado summary {
+  min-height: 32px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--azul-100);
+}
+
+.avanzado[open] summary {
+  margin-bottom: 0.75rem;
+}

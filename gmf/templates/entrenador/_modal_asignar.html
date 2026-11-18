@@ -1,0 +1,86 @@
+{% load gmf_extras %}
+{# Modal "Asignar rutina". Se abre desde Mis clientes y desde el detalle (botones con data-asignar). #}
+{# entrenador.js pone la acción del formulario, el cliente y la rutina actual de cada botón. #}
+<div class="modal-overlay{% if modal_asignar_abierto %} activo{% endif %}" id="modal-asignar" aria-hidden="{% if modal_asignar_abierto %}false{% else %}true{% endif %}">
+    <div class="modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="titulo-asignar">
+        <button type="button" class="modal-cerrar" data-cerrar-modal aria-label="Cerrar">&times;</button>
+        <form method="post" id="form-asignar"
+              action="{% if cliente %}{% url 'entrenador_asignar' cliente.pk %}{% endif %}">
+            {% csrf_token %}
+            <div class="modal-cabecera">
+                <h2 id="titulo-asignar">Asignar rutina</h2>
+                <span class="chip-cliente">
+                    <span class="usuario-bola" id="asignar-iniciales" aria-hidden="true">{% if cliente %}{{ cliente.usuario|iniciales }}{% endif %}</span>
+                    <span id="asignar-nombre">{% if cliente %}{{ cliente.usuario.get_full_name }}{% endif %}</span>
+                </span>
+            </div>
+
+            <span class="etiqueta-campo" id="etiqueta-rutinas">Elige una de tus rutinas <span class="obligatorio" aria-hidden="true">*</span></span>
+            {% if rutinas_asignables %}
+                <div id="caja-buscar">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="buscar-rutina" placeholder="Buscar rutina" aria-label="Buscar rutina">
+                </div>
+                <div class="lista-opciones" role="radiogroup" aria-labelledby="etiqueta-rutinas">
+                    {% for r in rutinas_asignables %}
+                        <label class="opcion-rutina" data-nombre="{{ r.nombre|lower }}" data-id="{{ r.id }}"
+                               data-titulo="{{ r.nombre }}" data-semanas="{{ r.semanas }}">
+                            <input type="radio" name="rutina" value="{{ r.id }}"{% if valores_asignar.rutina == r.id|stringformat:"s" %} checked{% endif %}>
+                            <div>
+                                <strong>{{ r.nombre }}</strong>
+                                <small>{{ r.semanas }} semana{{ r.semanas|pluralize }} · {{ r.dias_por_semana }} días/sem{% if r.objetivo %} · {{ r.objetivo }}{% endif %}</small>
+                            </div>
+                            <span class="etiqueta-publicada" data-marca-actual hidden>Actual</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="texto-gris">Aún no tienes rutinas publicadas. Publica una en el constructor para poder asignarla.</p>
+            {% endif %}
+            {% for m in errores_asignar|dato:"rutina" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+            <a href="{% url 'rutinas' %}?nueva=1" class="enlace-limpiar"><i class="fa-solid fa-plus"></i> Crear una rutina nueva</a>
+
+            <div class="fila-campos">
+                <div class="grupo-campo{% if errores_asignar.fecha_inicio %} con-error{% endif %}">
+                    <label for="asignar-fecha">Fecha de inicio <span class="obligatorio" aria-hidden="true">*</span></label>
+                    <input type="date" name="fecha_inicio" id="asignar-fecha" required
+                           value="{% if valores_asignar.fecha_inicio %}{{ valores_asignar.fecha_inicio }}{% else %}{{ fecha_por_defecto|date:'Y-m-d' }}{% endif %}">
+                    {% for m in errores_asignar|dato:"fecha_inicio" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                </div>
+                <div class="grupo-campo{% if errores_asignar.semana_inicio %} con-error{% endif %}">
+                    <label for="asignar-semana">Empezar en</label>
+                    <select name="semana_inicio" id="asignar-semana" data-valor="{{ valores_asignar.semana_inicio|default:'1' }}">
+                        <option value="1">Semana 1</option>
+                    </select>
+                    {% for m in errores_asignar|dato:"semana_inicio" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+                </div>
+            </div>
+
+            <div class="grupo-campo{% if errores_asignar.nota %} con-error{% endif %}">
+                <label for="asignar-nota">Nota para el cliente <small class="texto-gris">(opcional)</small></label>
+                <textarea name="nota" id="asignar-nota" rows="2" maxlength="500" placeholder="Ej: Calienta 10 minutos antes de cada sesión.">{{ valores_asignar.nota }}</textarea>
+                {% for m in errores_asignar|dato:"nota" %}<p class="error-campo">{{ m }}</p>{% endfor %}
+            </div>
+
+            <p style="margin: 1rem 0;">
+                <label class="interruptor">
+                    <input type="checkbox" name="notificar"{% if not errores_asignar or valores_asignar.notificar %} checked{% endif %}>
+                    <span class="interruptor-pista" aria-hidden="true"></span>
+                    Avisar a <span id="asignar-nombre-corto">{% if cliente %}{{ cliente.usuario.first_name }}{% endif %}</span> por notificación
+                </label>
+            </p>
+
+            <div class="caja-aviso" id="aviso-reemplazo" hidden>
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                <p>Esto reemplaza <strong id="aviso-actual"></strong>. El historial de cargas y de peso de
+                    <span class="nombre-aviso"></span> se conserva.</p>
+            </div>
+
+            <input type="hidden" name="volver" value="{{ request.get_full_path }}">
+            <div class="modal-botones">
+                <button type="button" class="boton-secundario" data-cerrar-modal>Cancelar</button>
+                <button type="submit" class="boton-primario" id="btn-asignar" disabled>Elige una rutina</button>
+            </div>
+        </form>
+    </div>
+</div>
